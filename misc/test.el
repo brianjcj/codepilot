@@ -1,3 +1,23 @@
+;; Copyright (C) 2010  Brian Jiang
+
+;; Author: Brian Jiang <brianjcj@gmail.com>
+;; Keywords: Programming
+;; Version: 0.1
+
+;; This program is free software; you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation, either version 3 of the License, or
+;; (at your option) any later version.
+
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+
+;; You should have received a copy of the GNU General Public License
+;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+
 ;; Misc function
 ;; temp function
 
@@ -36,20 +56,17 @@
         (pushnew (buffer-substring-no-properties (line-beginning-position) (line-end-position))
                  ll
                  :test #'string=)
-        (forward-line)
-        )
+        (forward-line))
       (with-output-to-temp-buffer "*temp*"
         (set-buffer standard-output)
         (dolist (i (nreverse ll))
-          (insert i "\n")))
-      )))
+          (insert i "\n"))))))
 
 (defadvice newline-and-indent (after newline-and-indent ())
   (when (eq (char-after) ?\))
     (save-excursion
       (newline)
-      (indent-according-to-mode)
-      )))
+      (indent-according-to-mode))))
 
 (ad-activate 'newline-and-indent)
 
@@ -66,26 +83,18 @@
 (defun mydiary-go-to-title-f ()
   "MyDiary"
   (interactive)
-;;  (save-match-data
-;;    (save-excursion
   (if (not(re-search-forward mydiary-title-regex nil t))
       (progn
         (goto-char (point-min))
-        (re-search-forward mydiary-title-regex nil t)))
-;;      ))
-  )
+        (re-search-forward mydiary-title-regex nil t))))
 
 (defun mydiary-go-to-title-b ()
   "MyDiary"
   (interactive)
-;;  (save-match-data
-;;    (save-excursion
   (if (not(re-search-backward mydiary-title-regex nil t))
       (progn
         (goto-char (point-max))
-        (re-search-backward mydiary-title-regex nil t)))
-;;      ))
-  )
+        (re-search-backward mydiary-title-regex nil t))))
 
 (defun mydiary-occur ()
   ""
@@ -113,8 +122,7 @@
 
   (let ((str "")
         (start (point-min))
-        (end (point-max))
-        )
+        (end (point-max)))
 
     (if (and transient-mark-mode mark-active)
         (setq start (region-beginning)))
@@ -129,10 +137,7 @@
         (set-buffer standard-output)
         (pp str)
         (emacs-lisp-mode)
-        (hs-minor-mode 1)
-        ))
-    )
-  )
+        (hs-minor-mode 1)))))
 
 
 (defun del-bufs-of-major-mode (maj-mode)
@@ -140,8 +145,7 @@
     (when (eq (with-current-buffer buf major-mode) maj-mode)
       (dolist (win (get-buffer-window-list buf))
         (delete-window win))
-      (kill-buffer buf))
-    ))
+      (kill-buffer buf))))
 
 (defun del-occur-bufs ()
   (interactive)
@@ -158,8 +162,7 @@
             (pop-to-buffer buf)
             ;(fit-window-to-buffer (get-buffer-window buf) (/ (frame-height) 2))
             (shrink-window-if-larger-than-buffer (get-buffer-window buf))
-            (throw 'loop t)
-            )))))
+            (throw 'loop t))))))
 
 
 
@@ -173,13 +176,9 @@
 (defun open-a-temp-file ()
   ""
   (interactive)
-
-  (let ()
-    (unless (file-directory-p my-temp-dir)
-      (make-directory my-temp-dir)
-      )
-    (find-file (let ((temporary-file-directory my-temp-dir)) (make-temp-file "brian"))))
-  )
+  (unless (file-directory-p my-temp-dir)
+    (make-directory my-temp-dir))
+  (find-file (let ((temporary-file-directory my-temp-dir)) (make-temp-file "brian"))))
 
 (global-set-key [f9] 'open-a-temp-file)
 
@@ -187,26 +186,20 @@
   ""
   (interactive)
 
-  (let (file-A
-        file-B
-        )
+  (let (file-A file-B)
     (unless (file-directory-p my-temp-dir)
-      (make-directory my-temp-dir)
-      )
+      (make-directory my-temp-dir))
     (let ((temporary-file-directory my-temp-dir))
       (setq file-A (make-temp-file "brian"))
-      (setq file-B (make-temp-file "brian"))
-      )
+      (setq file-B (make-temp-file "brian")))
 
-    (ediff-files file-A file-B)
-    ))
+    (ediff-files file-A file-B)))
 
 
 (defun my-close-temp-files ()
   (interactive)
   (let ((temp-dir (file-name-as-directory (expand-file-name my-temp-dir)))
-        (fname "")
-        )
+        (fname ""))
     (dolist (buf (buffer-list))
       (when (and (setq fname (buffer-file-name buf))
                  (string= (file-name-directory fname)
@@ -215,9 +208,7 @@
         (dolist (win (get-buffer-window-list buf))
           (ignore-errors
             (delete-window win)))
-        (kill-buffer buf)
-        )))
-  )
+        (kill-buffer buf)))))
 
 
 

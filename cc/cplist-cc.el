@@ -1,3 +1,22 @@
+;; Copyright (C) 2010  Brian Jiang
+
+;; Author: Brian Jiang <brianjcj@gmail.com>
+;; Keywords: Programming
+;; Version: 0.1
+
+;; This program is free software; you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation, either version 3 of the License, or
+;; (at your option) any later version.
+
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+
+;; You should have received a copy of the GNU General Public License
+;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 (require 'cl)
 (require 'cp-cc)
 (require 'mycscope)
@@ -9,29 +28,25 @@
 
   (let ((b (get-buffer cplist-buf-name))
         ;;(b-name (file-name-nondirectory buffer-file-name))
-        (b-name (buffer-name))
-        )
+        (b-name (buffer-name)))
     
     (when (and b
                (in-codepilot-cc-major-modes? major-mode)
                b-name)
       (cplist-add-line-to-idlist "^\\@ Buffer List  "
-                                 (concat "  " b-name "\n"))
-      )))
+                                 (concat "  " b-name "\n")))))
 
 (defun cplist-update-dired-list ()
   (message "find file hook hit")
 
   (let ((b (get-buffer cplist-buf-name))
-        (b-name (buffer-name))
-        )
+        (b-name (buffer-name)))
     
     (when (and b
                (eq major-mode 'dired-mode)
                b-name)
       (cplist-add-line-to-idlist "^\\@ Dired List  "
-                                 (concat "  " b-name "\n"))
-      )))
+                                 (concat "  " b-name "\n")))))
 
 
 (defun cplist-cc-fill-cplist ()
@@ -47,20 +62,14 @@
         (progn
           (dolist (b (buffer-list))
             (if (eq (with-current-buffer b  major-mode) 'cscope-list-entry-mode)
-                (insert "  " (concat (buffer-name b) "\n")))
-            )
+                (insert "  " (concat (buffer-name b) "\n"))))
           (cond ((eq cplist-query-sort-type 'name)
-                 (cplist-sort-query-list-by-name)
-                 )
+                 (cplist-sort-query-list-by-name))
                 ((eq cplist-query-sort-type 'id-name)
-                 (cplist-sort-query-by-id-name)
-                 )
-                )
-          (insert "\n")
-          )
+                 (cplist-sort-query-by-id-name)))
+          (insert "\n"))
       (insert "\n")
-      (mycscope-cplist-sort-query-by-create)
-      ))
+      (mycscope-cplist-sort-query-by-create)))
 
   (when (or (eq cplist-type 'all)
             (eq cplist-type 'gtags))
@@ -68,11 +77,9 @@
     (insert " GTags List  \n")
     (cond ((eq cplist-query-sort-type 'create)
            (insert "\n")
-           (mygtags-list-sort-by-create)
-           )
+           (mygtags-list-sort-by-create))
           (t
-           (cplist-list-buffer 'gtags-select-mode)
-           )))
+           (cplist-list-buffer 'gtags-select-mode))))
 
   (when (or (eq cplist-type 'all)
             (eq cplist-type 'buffer))
@@ -82,8 +89,7 @@
       (dolist (b (buffer-list))
         (setq mm (with-current-buffer b major-mode))
         (when (in-codepilot-cc-major-modes? mm)
-          (insert "  " (concat (buffer-name b) "\n"))
-          )))
+          (insert "  " (concat (buffer-name b) "\n")))))
     (insert "\n"))
 
 
@@ -95,8 +101,7 @@
       (dolist (b (buffer-list))
         (setq mm (with-current-buffer b major-mode))
         (when (eq mm 'dired-mode)
-          (insert "  " (concat (buffer-name b) "\n"))
-          )))
+          (insert "  " (concat (buffer-name b) "\n")))))
     (insert "\n"))
   
   ;; (insert-image codepilot-image-bucket-1 "@")
@@ -146,8 +151,7 @@
                   (pop find-gtag-history))
                  (t
                   (setq ltail (nthcdr (1- ind) find-gtag-history))
-                  (setcdr ltail (cdr (cdr ltail)))
-                  ))
+                  (setcdr ltail (cdr (cdr ltail)))))
            )
           ((eq ?> (aref str 0))
            (setq tagname (subseq str 2))
@@ -157,10 +161,7 @@
                   (pop find-tag-history))
                  (t
                   (setq ltail (nthcdr (1- ind) find-tag-history))
-                  (setcdr ltail (cdr (cdr ltail)))
-                  ))
-           )
-          )))
+                  (setcdr ltail (cdr (cdr ltail)))))))))
 
 (defun cplist-cc-goto-next-visible-tagline ()
   (forward-line)
@@ -173,11 +174,9 @@
                          (some #'(lambda (o)
                                    (eq 'cpfilter (overlay-get o 'tag)))
                                ol)))))
-    (forward-line)
-    )
+    (forward-line))
   (unless (eobp)
-    t
-    ))
+    t))
 
 (defun cplist-cc-tab ()
   (interactive)
@@ -188,15 +187,13 @@
         ))
     (cond (pos
            (goto-char pos)
-           t
-           )
+           t)
           (t
            (save-excursion
              (goto-char (point-min))
              (forward-line) ;; skip the cpfilter line
              (when (cplist-cc-goto-next-visible-tagline)
-               (setq pos (point))
-               ))
+               (setq pos (point))))
            (when pos
              (goto-char pos)
              t)))))

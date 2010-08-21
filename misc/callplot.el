@@ -1,3 +1,23 @@
+;; Copyright (C) 2010  Brian Jiang
+
+;; Author: Brian Jiang <brianjcj@gmail.com>
+;; Keywords: Programming
+;; Version: 0.1
+
+;; This program is free software; you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation, either version 3 of the License, or
+;; (at your option) any later version.
+
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+
+;; You should have received a copy of the GNU General Public License
+;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+
 ;; Brian Jiang
 ;; 2007-12-30
 
@@ -36,8 +56,7 @@
             (cond ((re-search-backward "^TIMESTAMP: " nil t)
                    (push (point-marker) ll))
                   (t
-                   (throw 'loop nil)
-                   ))))
+                   (throw 'loop nil)))))
         ll))))
 
 (defun parse-msgs (msg-marker-list)
@@ -71,13 +90,11 @@
                 (setq append-msg callstat)))
           (push (list :-> m msg append-msg snode dnode (if callplot-display-help-echo (concat ts "\n" callstat) nil)) msg-list)
           (pushnew snode node-list :test #'string=)
-          (pushnew dnode node-list :test #'string=)
-          )))
+          (pushnew dnode node-list :test #'string=))))
     (when msg-list
       (setq msg-list (nreverse msg-list)))
     (setq node-list (arrange-nodes node-list))
-    (values msg-list node-list)
-    ))
+    (values msg-list node-list)))
 
 (defun arrange-nodes (node-list)
   ""
@@ -109,8 +126,7 @@
               (t
                (push node mist-list))))))
         (t
-         (push node mist-list))
-        ))
+         (push node mist-list))))
     (setq ll (append mist-list friu-list cau-list rmu-list liu7-list ace-list cm-list))
     (unless (= (length ll) (length node-list))
       (error "Something wrong!!!"))
@@ -143,8 +159,7 @@
       (when (< fs 0)
         (setq fs 0))
       (setq fs (put-str-to-line% node line fs))
-      (incf ind)
-      )
+      (incf ind))
     (insert (substring line 0 fs))
     (save-excursion
       (forward-line 0)
@@ -152,8 +167,7 @@
     (add-text-properties start (+ start fs) '(face callplot-nodeline-face))
     (insert "\n")
     (when draw-headline-p
-      (setq header-line-format (concat " " (substring line 0 fs))))
-    ))
+      (setq header-line-format (concat " " (substring line 0 fs))))))
 
 (defun draw-nodes-mult (node-list line &optional draw-headline-p)
   (let ((ll (loop for node in node-list collect (split-string node "\\^")))
@@ -164,8 +178,7 @@
           (setq lines-list
                 (loop for lines in ll collect (if (> (length lines) i) (elt lines i) "")))
           (fillarray line ?\s)
-          (draw-nodes lines-list line (= i 0))
-          )))
+          (draw-nodes lines-list line (= i 0)))))
 
 (defun fill-| (number-of-node line)
   (loop for i from 0 below number-of-node do
@@ -198,8 +211,7 @@
                      (cond ((string= "on" opt-val)
                             (setq callplot-display-msgid t))
                            ((string= "off" opt-val)
-                            (setq callplot-display-msgid nil))
-                           ))
+                            (setq callplot-display-msgid nil))))
                     ((string= "linePitch" opt)
                      (setq callplot-padded-line (- (string-to-number opt-val) 2))
                      (if (< callplot-padded-line 0)
@@ -212,9 +224,7 @@
                      (cond ((string= "on" opt-val)
                             (setq callplot-note-numbering t))
                            ((string= "off" opt-val)
-                            (setq callplot-note-numbering nil))
-                           ))
-                    ))
+                            (setq callplot-note-numbering nil))))))
         (multiple-value-bind (g1 g2)
             (loop for (a . b) in guy-list collect a into l1 collect b into l2
                   finally (return (values l1 l2)))
@@ -279,8 +289,7 @@
                          (dolist (m (cdr msg-lines))
                            (put-str-to-line% line-fill line 0)
                            (setq start (put-str-to-line% m line start-col))
-                           (insert (substring line 0 (max start len-of-bline)) "\n")
-                           )))
+                           (insert (substring line 0 (max start len-of-bline)) "\n"))))
                      (draw-loop-arrow% ()
                        (let* ((len-half (/ (1+ callplot-column-width) 2))
                               (start (1+ s-col))
@@ -310,8 +319,7 @@
                 
                 (setq snode-ind (position snode node-list :test #'string=))
                 (unless snode-ind
-                  (error "Node %s is undefined!" snode)
-                  )
+                  (error "Node %s is undefined!" snode))
                 (setq s-col (node-column snode-ind))
               
                 (cond
@@ -323,8 +331,7 @@
                   (t            
                    (setq dnode-ind (position dnode node-list :test #'string=))
                    (unless dnode-ind
-                     (error "Node %s is undefined!" dnode)
-                     )
+                     (error "Node %s is undefined!" dnode))
                    (if (> snode-ind dnode-ind)
                        (setq dir :b)
                        (setq dir :f))
@@ -343,19 +350,15 @@
                    (cond ((eq dir :=)
                           (draw-loop-arrow%))
                          (t
-                          (draw-arrow%)
-                          ))
+                          (draw-arrow%)))
                    
                    (incf msg-id)))
                 (dotimes (i callplot-padded-line)
-                  (insert (substring line-fill 0 len-of-bline) "\n")))
-              ))
+                  (insert (substring line-fill 0 len-of-bline) "\n")))))
           (insert (substring line-fill 0 len-of-bline) "\n"))
-        (callplot-mode)
-        ))
+        (callplot-mode)))
     (delete-other-windows)
-    (switch-to-buffer callplot-buffer-name)
-    ))
+    (switch-to-buffer callplot-buffer-name)))
 
 (defvar callplot-mode-keymap nil)
 
@@ -376,8 +379,7 @@
   (let ((m (get-text-property (point) 'callplot-msg-target)))
     (when m
       (pop-to-buffer (marker-buffer m))
-      (goto-char m))
-    ))
+      (goto-char m))))
 
 (define-key callplot-mode-keymap [mouse-1] 'callplot-mode-mouse-goto)
 
@@ -407,11 +409,9 @@
                    (when (= 3 (length ll))
                      (push (list :-> msg-marker (third ll) nil (second nodes) (first nodes) nil) msg-list)))
                   ((>= (length (setq nodes (split-string cmd "\\.\\."))) 2)
-                   (push (list :dot msg-marker (second ll) nil (first nodes) (second nodes) nil) msg-list))
-                  )))
+                   (push (list :dot msg-marker (second ll) nil (first nodes) (second nodes) nil) msg-list)))))
             
-          (forward-line))
-        ))
+          (forward-line))))
     (values (nreverse msg-list) (nreverse guy-alist) option-alist)))
 
 
@@ -429,8 +429,7 @@
       (let ((inhibit-read-only t)
 	    (buffer-undo-list t))
         (setq buffer-read-only nil)
-	(erase-buffer)
-        ))
+	(erase-buffer)))
 
     (if (string= style "")
             (call-process-region (point-min) (point-max) "java" nil buf nil "-jar" callplot-java-jar "-")
@@ -441,8 +440,7 @@
     (goto-char (point-min))
     (setq buffer-read-only t)
     (set-buffer-modified-p nil)
-    (toggle-truncate-lines 1)
-    ))
+    (toggle-truncate-lines 1)))
 
 (defun write-customize-to-opt ()
   (interactive)
@@ -465,8 +463,7 @@
         (dolist (msg-item msg-list)
           (destructuring-bind (cat msg-mark msg append-msg snode dnode help-echo)
               msg-item
-            (insert snode "->" dnode "/" msg "\n")
-            ))))))
+            (insert snode "->" dnode "/" msg "\n")))))))
 
 ;; (global-set-key [(f12)] 'draw-plot)
 
@@ -488,8 +485,7 @@
                    (forward-line 0)
                    (push (point-marker) ll))
                   (t
-                   (throw 'loop nil)
-                   ))))
+                   (throw 'loop nil)))))
         ll))))
 
 (defun parse-msgs-ss7 (msg-marker-list)
@@ -509,8 +505,7 @@
                        dnode (third tl)))
                 ((find ?< tt)
                  (setq dnode (first tl)
-                       snode (third tl))
-                 ))
+                       snode (third tl))))
 
           (re-search-forward "\\(^    Responding Transaction ID: \\)\\|\\(^  INVOKE (last)\\)" limit t)
           (setq ms (match-string 0))
@@ -527,8 +522,7 @@
                                                                                     (re-search-backward "[^ ]" nil t)
                                                                                     (1+ (point)))))))
                      ;; else
-                     (setq msg "RETURN RESULT")
-                     ))
+                     (setq msg "RETURN RESULT")))
                 ((match-string 2)
                  ;;(string= "  INVOKE (last)" ms)
                  (re-search-forward "^  Operation Code Specifier: " nil t)
@@ -537,21 +531,18 @@
                                                                      (re-search-backward "[^ ]" nil t)
                                                                      (1+ (point))))))
                 (t
-                 (setq msg "Unknown msg")
-                 ))
+                 (setq msg "Unknown msg")))
           
           (push (list :-> m msg nil snode dnode nil) msg-list)
           (pushnew snode node-list :test #'string=)
           (pushnew dnode node-list :test #'string=)
 
-          (setq limit (marker-position m))
-          )))
+          (setq limit (marker-position m)))))
     (when msg-list
       (setq msg-list msg-list))
     (when node-list
       (setq node-list (nreverse node-list)))
-    (values msg-list node-list)
-    ))
+    (values msg-list node-list)))
 
 
 (defun ss7-file-p ()

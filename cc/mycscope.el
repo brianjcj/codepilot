@@ -1,6 +1,24 @@
+;; Copyright (C) 2010  Brian Jiang
+
+;; Author: Brian Jiang <brianjcj@gmail.com>
+;; Keywords: Programming
+;; Version: 0.1
+
+;; This program is free software; you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation, either version 3 of the License, or
+;; (at your option) any later version.
+
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+
+;; You should have received a copy of the GNU General Public License
+;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 (eval-when-compile
-  (require 'cl)
-  )
+  (require 'cl))
 
 (require 'cp-cc)
 (require 'xcscope)
@@ -18,15 +36,11 @@
    m-list
    (when m-list
      (setq m-list (sort m-list (lambda (a b)
-                                 (>  (car a)  (car b))
-                                 )))
+                                 (>  (car a)  (car b)))))
      
      (dolist (b1 m-list)
-       (insert "  " (cdr b1) "\n")
-       )
-     ))
-  (setq cplist-query-sort-type 'create)
-  )
+       (insert "  " (cdr b1) "\n"))))
+  (setq cplist-query-sort-type 'create))
 
 (defvar cscope-jump-single-match nil)
 
@@ -41,8 +55,7 @@
                     (forward-line)
                     (re-search-forward "^-------------" nil t))
             (forward-line -1)
-            (setq pos (point))
-            ))))
+            (setq pos (point))))))
     pos))
 
 
@@ -77,8 +90,7 @@
                                   (setq e (1- (point))))
                                  (t
                                   (setq e (point-max))))
-                           (cptree-hide-region b e 'cptree)
-                           )))
+                           (cptree-hide-region b e 'cptree))))
                      t)
                     (t nil)))))
               (t
@@ -178,8 +190,7 @@
 		     (= (window-point window) (point-max)))
 		(= (point) (point-max)))
 	    (progn
-	      (setq update-window t)
-	      ))
+	      (setq update-window t)))
 	(delete-process process)
 	(let (buffer-read-only continue)
 	  (goto-char (point-max))
@@ -189,8 +200,7 @@
 	    (progn
 	      (if (not cscope-start-directory)
 		  (setq cscope-start-directory default-directory))
-	      (insert cscope-separator-line)
-	      ))
+	      (insert cscope-separator-line)))
 	  (setq continue
 		(and cscope-search-list
 		     (not (and cscope-first-match
@@ -200,8 +210,7 @@
 	      (setq continue (cscope-search-one-database)))
 	  (if continue
 	      (progn
-		(setq done nil)
-		)
+		(setq done nil))
 	    (progn
 	      (insert "\nSearch complete.")
 	      (if cscope-display-times
@@ -211,44 +220,35 @@
 					 (* (car (cdr (cdr times))) 1.0E-6)))
 		    (setq elapsed-time (- cscope-stop cscope-start-time))
 		    (insert (format "  Search time = %.2f seconds."
-				    elapsed-time))
-		    ))
+				    elapsed-time))))
 	      (setq cscope-process nil)
 	      ;; (if cscope-running-in-xemacs  ;; brian
 	      ;;     (setq modeline-process ": Search complete"))
 	      (if cscope-start-directory
 		  (setq default-directory cscope-start-directory))
 	      (if (not cscope-first-match)
-		  (message "No matches were found."))
-	      )
-	    ))
-	(set-buffer-modified-p nil)
-	))
+		  (message "No matches were found.")))))
+	(set-buffer-modified-p nil)))
     (if (and done cscope-first-match-point update-window)
 	(if window
 	    (set-window-point window cscope-first-match-point)
-	  (goto-char cscope-first-match-point))
-      )
+	  (goto-char cscope-first-match-point)))
     (cond
      ( (not done)		;; we're not done -- do nothing for now
        (if update-window
 	   (if window
 	       (set-window-point window (point-max))
-	     (goto-char (point-max))))
-       )
+	     (goto-char (point-max)))))
      ( cscope-first-match
        (if cscope-display-cscope-buffer
            (if (and cscope-edit-single-match (not cscope-matched-multiple))
                (let ((cscope-jump-single-match t))
                  (cscope-show-entry-internal(car cscope-first-match)
                                             (cdr cscope-first-match) t)))
-         (cscope-select-entry-specified-window old-buffer-window))
-       )
-     )
+         (cscope-select-entry-specified-window old-buffer-window))))
     (if (and done (eq old-buffer buffer) cscope-first-match)
 	(cscope-help))
-    (set-buffer old-buffer)
-    ))
+    (set-buffer old-buffer)))
 
 
 ;; deal with windows layout
@@ -297,22 +297,17 @@ Returns the window displaying BUFFER."
                         (switch-to-buffer buffer)
                         (save-selected-window
                           (other-window 1)
-                          (fit-window-to-buffer bottom-win (/ (frame-height) 2)))
-                        )
+                          (fit-window-to-buffer bottom-win (/ (frame-height) 2))))
                        ((:window-layout-1&2+ :window-layout-3+ :window-layout-2)
                         (select-window code-win)
                         (switch-to-buffer buffer)
                         (save-selected-window
                           (select-window bottom-win)
                           (switch-to-buffer old-buf)
-                          (fit-window-to-buffer bottom-win (/ (frame-height) 2))
-                          ))
+                          (fit-window-to-buffer bottom-win (/ (frame-height) 2))))
                        (otherwise
                         (select-window code-win)
-                        (switch-to-buffer buffer)
-                        ))
-                     ))
-              ))
+                        (switch-to-buffer buffer)))))))
 	  (set-buffer buffer)
 	  (if (> line-number 0)
 	      (progn
@@ -367,8 +362,7 @@ Returns the window displaying BUFFER."
                   )
 		(or (not save-mark-p)
 		    (= old-pos (point))
-		    (push-mark old-pos))
-		))
+		    (push-mark old-pos))))
 
 	  (if cscope-marker
 	      (progn ;; The search was successful.  Save the marker so it
@@ -394,8 +388,7 @@ Returns the window displaying BUFFER."
     ("-4" . "t")
     ("-6" . "e")
     ("-7" . "f")
-    ("-8" . "i")
-    ))
+    ("-8" . "i")))
 
 (defun cscope-call (msg args &optional directory filter-func sentinel-func)
   "Generic function to call to process cscope requests.
@@ -413,8 +406,7 @@ SENTINEL-FUNC are optional process filter and sentinel, respectively."
                            ": " sym))
 
     (cond ((get-buffer buf-name)
-           (codepilot-switch-to-buffer buf-name)
-           )
+           (codepilot-switch-to-buffer buf-name))
           (t
 
            (let ((outbuf (get-buffer-create cscope-output-buffer-name))
@@ -461,8 +453,7 @@ SENTINEL-FUNC are optional process filter and sentinel, respectively."
                (setq truncate-lines cscope-truncate-lines)
                (if msg
                    (insert msg "\n"))
-               (cscope-search-one-database)
-               )
+               (cscope-search-one-database))
              (if cscope-display-cscope-buffer
                  (progn
                    ;; (pop-to-buffer outbuf)
@@ -486,8 +477,7 @@ SENTINEL-FUNC are optional process filter and sentinel, respectively."
              (toggle-truncate-lines 1)
 
              ;; update the [CScope Query List]
-             (cplist-add-line-to-idlist "^@ CScope Query List  " (concat "  " buf-name "\n"))
-             )))))
+             (cplist-add-line-to-idlist "^@ CScope Query List  " (concat "  " buf-name "\n")))))))
 
 (define-key codepilot-ro-mode-map "s" 'cscope-find-this-symbol)
 (define-key codepilot-ro-mode-map "d" 'cscope-find-global-definition)

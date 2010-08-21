@@ -1,5 +1,4 @@
 
-
 ;; hack on hideshow.el
 ;; Remember update it when upgrade to new Emacs vesion (new hideshow.el)
 ;; ============================
@@ -83,8 +82,7 @@ and then further adjusted to be at the end of the line."
                            (backward-char)
                            (setq con nil))
                           (t
-                           (up-list)))
-                    )
+                           (up-list))))
                   (not con))
                 ))
     (if (> arg 1)
@@ -123,15 +121,13 @@ and then further adjusted to be at the end of the line."
           (overlay-put ov 'face 'codepilot-folding-overlay)
           (overlay-put ov 'priority (overlay-end ov))
           (overlay-put ov 'keymap hs--overlay-keymap)
-          (overlay-put ov 'pointer 'hand)
-          )))
+          (overlay-put ov 'pointer 'hand))))
 
 (define-key hs-minor-mode-map [(f10)] 'hs-toggle-hiding)
 (define-key hs-minor-mode-map [mouse-2] (lambda (e)
                                           (interactive "e")
                                           (mouse-set-point e)
-                                          (hs-toggle-hiding)
-                                          ))
+                                          (hs-toggle-hiding)))
 
 
 (defun hs-toggle-hiding ()
@@ -156,12 +152,9 @@ See `hs-hide-block' and `hs-show-block'."
                           )
                       o-list
                       ))
-           (show-ifdef-block)
-           )
+           (show-ifdef-block))
           (t
-           (hide-ifdef-block)
-           ))
-    ))
+           (hide-ifdef-block)))))
 
 
 (defvar hif--overlay-keymap nil "keymap for folding overlay")
@@ -169,8 +162,7 @@ See `hs-hide-block' and `hs-show-block'."
 (let ((map (make-sparse-keymap)))
   (define-key map [mouse-1] 'show-ifdef-block)
   (define-key map "\r" 'show-ifdef-block)
-  (setq hif--overlay-keymap map)
-  )
+  (setq hif--overlay-keymap map))
 
 
 (defun hide-ifdef-region-internal (start end)
@@ -193,8 +185,7 @@ See `hs-hide-block' and `hs-show-block'."
     (overlay-put o 'face 'codepilot-folding-overlay)
     (overlay-put o 'priority (overlay-end o))
     (overlay-put o 'keymap hif--overlay-keymap)
-    (overlay-put o 'pointer 'hand)
-    ))
+    (overlay-put o 'pointer 'hand)))
 
 (define-key hide-ifdef-mode-map [(shift f10)] 'myhif-toggle-hideshow-block)
 

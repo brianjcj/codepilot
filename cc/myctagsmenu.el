@@ -290,8 +290,7 @@
     (save-excursion
       (dolist (i myctags-cache)
         (when (cdr (cdr i))
-          (push  (cons (capitalize (second i)) (nreverse (cdr (cdr i)))) alist)
-          ))
+          (push  (cons (capitalize (second i)) (nreverse (cdr (cdr i)))) alist)))
       (dolist (i myctags-class-list)
         (push  (cons (myctags-format-class-name (car i)) (nreverse (cdr i))) alist)))
 
@@ -347,7 +346,8 @@
 (defun cc-which-func-2 ()
   (if (and (featurep 'semantic)
            ;; semantic--buffer-cache
-           (semantic-active-p))
+           (semantic-active-p)
+           (eq imenu-create-index-function 'semantic-create-imenu-index))
       (let (o name pos)
         (setq o (cpimenu-semantic-which-func-and-pos))
         (setq name (car o)
@@ -481,14 +481,12 @@
                           (set-window-dedicated-p (selected-window) t)))
                     (error
                      (pop-to-buffer buf)
-                     (shrink-window-if-larger-than-buffer (get-buffer-window "*MyCtagsMenu*"))
-                     )))
+                     (shrink-window-if-larger-than-buffer (get-buffer-window "*MyCtagsMenu*")))))
                  ((:window-layout-1)
                   (split-window nil myctags-side-window-size t)
                   (save-selected-window
                     (switch-to-buffer buf)
-                    (set-window-dedicated-p (selected-window) t)
-                    ))
+                    (set-window-dedicated-p (selected-window) t)))
                  (otherwise
                   (pop-to-buffer buf)
                   (shrink-window-if-larger-than-buffer (get-buffer-window "*MyCtagsMenu*")))))))))

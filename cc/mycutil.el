@@ -1,3 +1,23 @@
+;; Copyright (C) 2010  Brian Jiang
+
+;; Author: Brian Jiang <brianjcj@gmail.com>
+;; Keywords: Programming
+;; Version: 0.1
+
+;; This program is free software; you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation, either version 3 of the License, or
+;; (at your option) any later version.
+
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+
+;; You should have received a copy of the GNU General Public License
+;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+
 (require 'cp-pb)
 (require 'myctagsmenu)
 
@@ -12,9 +32,7 @@
           (setq n (skip-chars-backward "\\\\"))
 
           (cond ((= 0 (% n 2))
-                 (setq done t)
-                 ))
-          )))))
+                 (setq done t))))))))
 
 
 ;; 1: /* 2: // 3: {  4: " 5: '
@@ -38,29 +56,23 @@
          (cond ((match-beginning 1)
                 ;; /*
                 ;; then skip the comments
-                (re-search-forward "\\*/")
-                )
+                (re-search-forward "\\*/"))
                ((match-beginning 2)
                 ;; //
                 ;; skip the comments
-                (forward-line)
-                )
+                (forward-line))
                ((match-beginning 3)
                 ;; {
                 ;; skip the block
-                (up-list)
-                )
+                (up-list))
                ((match-beginning 4)
                 ;; doublt quote
-                (c-skip-quote "\"")
-                )
+                (c-skip-quote "\""))
                ((match-beginning 5)
                 ;; single quote
-                (c-skip-quote "\'")
-                )
+                (c-skip-quote "\'"))
                (t
-                ,@body
-                )))
+                ,@body)))
        ,ret)))
 
 (defun c-find-a-string-not-in-comment/quote (s &optional limit)
@@ -70,8 +82,7 @@
      limit
      result
      (when (match-beginning 6)
-       (setq result t))
-     )))
+       (setq result t)))))
 
 (defun fold-c-switch ()
   ""
@@ -107,12 +118,9 @@
                   (save-excursion
                     (c-find-a-string-not-in-comment/quote ":")
                     (end-of-line)
-                    (setq pos (point)))
-                  )))
+                    (setq pos (point))))))
           (when pos
-            (cptree-hide-region pos (1- (point-max)) 'cptree)
-            )
-          )))))
+            (cptree-hide-region pos (1- (point-max)) 'cptree)))))))
 
 (defun fold-c-switch-branch ()
   ""
@@ -149,26 +157,20 @@
                                       (point))
                                     'cptree)
                 (setq pos (point))
-                (setq result t)
-                )))
+                (setq result t))))
 
         (unless result
-          (cptree-hide-region pos limit 'cptree)
-          )
-        ))))
+          (cptree-hide-region pos limit 'cptree))))))
 
 
 
 (defvar mycutil-c-block-regexp
   (concat "\\_<"
           (regexp-opt (list
-                       "if" "else" "switch" "case" "for" "while" "default" "do"
-                       )
-                      t
-                      )
+                       "if" "else" "switch" "case" "for" "while" "default" "do")
+                      t)
           "\\_>"
-          "\\|}"
-          ))
+          "\\|}"))
 
 (defun my-in-quote/comment ()
   "Returns none nil if point is in quote or comment, nil otherwise."
@@ -180,38 +182,30 @@
     (save-excursion
       (save-match-data
         (while (and (search-forward string bound t)
-                    (null pos)
-                    )
+                    (null pos))
           (unless (my-in-quote/comment)
-            (setq pos (point))
-            ))))
+            (setq pos (point))))))
     (when pos
       (goto-char pos))
-    pos
-    ))
+    pos))
 
 (defun mycutil-re-search (string fn &optional bound)
   (let (pos)
     (save-excursion
       (save-match-data
         (while (and (funcall fn string bound t)
-                    (null pos)
-                    )
+                    (null pos))
           (unless (my-in-quote/comment)
-            (setq pos (point))
-            ))))
+            (setq pos (point))))))
     (when pos
       (goto-char pos))
-    pos
-    ))
+    pos))
 
 (defun mycutil-re-search-forward (string &optional bound)
-  (mycutil-re-search string 're-search-forward bound)
-  )
+  (mycutil-re-search string 're-search-forward bound))
 
 (defun mycutil-re-search-backward (string &optional bound)
-  (mycutil-re-search string 're-search-backward bound)
-  )
+  (mycutil-re-search string 're-search-backward bound))
 
 (defun mycutil-which-block (&optional b)
   (interactive)
@@ -219,31 +213,24 @@
         pos
         (org-p (point))
         str-m
-        temp-pos
-        )
+        temp-pos)
     (save-excursion
       (save-match-data
         (while (and (re-search-backward mycutil-c-block-regexp b t)
-                    (null pos)
-                    )
+                    (null pos))
           (unless (my-in-quote/comment)
             (setq str-m (match-string 0))
             (cond ((string= str-m "}")
-                   (backward-up-list)
-                   )
+                   (backward-up-list))
 
                   ((or (string= str-m "case")
-                       (string= str-m "default")
-                       )
-                   (setq pos (point))
-                   )
+                       (string= str-m "default"))
+                   (setq pos (point)))
                   (t
 
                    (cond ((and (or (string= str-m "else")
-                                   (string= str-m "if")
-                                   )
-                               (eq (char-before) ?#)
-                               )
+                                   (string= str-m "if"))
+                               (eq (char-before) ?#))
                           ;; it is #if or #else
                           ;; search again.
                           )
@@ -254,10 +241,8 @@
 
                             (unless (or (string= str-m "else")
                                         ;; (string= str-m "switch")
-                                        (string= str-m "do")
-                                        )
-                              (forward-list)
-                              )
+                                        (string= str-m "do"))
+                              (forward-list))
 
                             (cond ((and (> org-p (point))
                                         (mycutil-re-search-forward "[{;]" org-p))
@@ -266,22 +251,18 @@
                                             (backward-char)
                                             (forward-list)
                                             (when (> (point) org-p)
-                                              (setq pos temp-pos)
-                                              ))
+                                              (setq pos temp-pos)))
                                            (t
                                             ;;seach again.
                                             ))))
                                   (t
-                                   (setq pos temp-pos)
-                                   )))))))))))
+                                   (setq pos temp-pos))))))))))))
     ;; (when b
     ;;   (goto-char b)
     ;;   )
     (when pos
       (goto-char pos)
-      str-m
-      )
-    ))
+      str-m)))
 
 (defun mycutil-cp-pb-where-we-are ()
   (interactive)
@@ -292,10 +273,7 @@
         skip-back-func
         search-uncommented-b-func
         ;; (b (save-excursion (beginning-of-defun) (point)))
-        name-and-pos
-        b
-        p1 p2 p3
-        )
+        name-and-pos b p1 p2 p3)
 
     (forward-line 0) ;; brian: Think about it
     
@@ -321,12 +299,10 @@
             (cond ((string= ms "else")
                    (setq ll (cp-pb-push-line ll last-line-b)
                          last-line-b (line-beginning-position))
-                   (mycutil-re-search-backward "[};]")
-                   )
+                   (mycutil-re-search-backward "[};]"))
                   ((or (string= ms "if")
                        (string= ms "for")
-                       (string= ms "while")
-                       )
+                       (string= ms "while"))
                    (setq p1 (point))
                    (setq p2 (line-beginning-position))
                    (forward-list)
@@ -336,18 +312,15 @@
                    (while (>= (point) p2)
                      (setq ll (cp-pb-push-line ll last-line-b)
                            last-line-b (line-beginning-position))
-                     (forward-line -1)
-                     )
-                   (goto-char p1)
-                   )
+                     (forward-line -1))
+                   (goto-char p1))
                   ((string= ms "default")
                    (setq ll (cp-pb-push-line ll last-line-b)
                          last-line-b (line-beginning-position))
                    (backward-up-list)
                    (mycutil-re-search-backward "\\_<switch\\_>")
                    (setq ll (cp-pb-push-line ll last-line-b)
-                         last-line-b (line-beginning-position))
-                   )
+                         last-line-b (line-beginning-position)))
                   ((string= ms "case")
                    (setq ll (cp-pb-push-line ll last-line-b)
                          last-line-b (line-beginning-position))
@@ -356,10 +329,8 @@
                    (setq p2 nil)
                    (while (and (mycutil-re-search-backward "[^ \n\t]")
                                (eq ?: (char-after))
-                               (mycutil-re-search-backward "\\_<case\\_>")
-                               )
-                     (setq p2 (line-beginning-position))
-                     )
+                               (mycutil-re-search-backward "\\_<case\\_>"))
+                     (setq p2 (line-beginning-position)))
                    (goto-char p1)
                    (when p2
                      (setq ll (cp-pb-push-line ll last-line-b)
@@ -368,19 +339,15 @@
                      (while (>= (point) p2)
                        (setq ll (cp-pb-push-line ll last-line-b)
                              last-line-b (line-beginning-position))
-                       (forward-line -1)
-                       ))
+                       (forward-line -1)))
                    (goto-char p1)
                    (backward-up-list)
                    (mycutil-re-search-backward "\\_<switch\\_>")
                    (setq ll (cp-pb-push-line ll last-line-b)
-                         last-line-b (line-beginning-position))
-                   )
+                         last-line-b (line-beginning-position)))
                   (t
                    (setq ll (cp-pb-push-line ll last-line-b)
-                         last-line-b (line-beginning-position))
-                   )
-                  )))))
+                         last-line-b (line-beginning-position))))))))
 
     (setq buf (get-buffer-create "*Block Traceback*"))
 
@@ -402,22 +369,19 @@
                             'face 'codepilot-hl-text-face)
          (insert " - How did I reach the point?")
          (put-text-property (line-beginning-position) (line-end-position)
-                            'cp-pb-target b)
-         )
+                            'cp-pb-target b))
 
        (insert "\n")
        (dolist (i ll)
          (insert (car i))
          (put-text-property (line-beginning-position) (line-end-position)
                             'cp-pb-target (second i))
-         (insert "\n")
-         )
+         (insert "\n"))
        (goto-char (point-max))
        (forward-line -1)
        (setq to-pos (point))
        ;; (myimenu-hl-text (line-beginning-position) (line-end-position))
-       (codepilot-highlight-one-line-1)
-       ))
+       (codepilot-highlight-one-line-1)))
 
     (save-selected-window
       (cp-pb-pop-to-buffer buf)
@@ -425,8 +389,7 @@
       (recenter -1)
       ;; (shrink-window-if-larger-than-buffer)
       ;; (fit-window-to-buffer (get-buffer-window buf) (/ (frame-height) 2))
-      )
-    ))
+      )))
 
 (defalias 'cp-pb-where-we-are 'mycutil-cp-pb-where-we-are)
 
@@ -456,12 +419,10 @@
             (setq pnm (cc-which-func-2))
             (cond ((and pnm (car pnm))
                    (setq proc (car pnm))
-                   (setq mp (second pnm))
-                   )
+                   (setq mp (second pnm)))
                   (t
                    (setq proc "--Global---")
-                   (setq mp nil)
-                   ))
+                   (setq mp nil)))
             (setq begpt (line-beginning-position))
             (setq endpt (line-end-position))
             (if (and (if (boundp 'jit-lock-mode) jit-lock-mode)
@@ -470,8 +431,7 @@
                     (jit-lock-fontify-now begpt endpt)))
             (push (list proc mp (buffer-substring begpt endpt) (point))
                   ll)
-            (forward-line)
-            ))))
+            (forward-line)))))
 
     (setq buf (get-buffer-create "*Which Procs*"))
 
@@ -483,16 +443,12 @@
                cp-pb-buffer-search-type
                (string= cp-pb-buffer-file-name f-name)
                (string= cp-pb-buffer-search-text txt)
-               (string= cp-pb-buffer-search-type s-type)
-               )
+               (string= cp-pb-buffer-search-type s-type))
           ;; Highlight Corresponding line.
-          (set-marker to-pos (cp-pb-highlight-line-cordingly b-pos))
-          )
+          (set-marker to-pos (cp-pb-highlight-line-cordingly b-pos)))
          (t
           (font-lock-mode 0)
           (cp-pb-mode 1)
-
-          (message "Generat Which Procs buffer")
           (make-local-variable 'cp-pb-buffer-file-name)
           (setq cp-pb-buffer-file-name f-name)
 
@@ -526,26 +482,22 @@
                         (set-marker to-pos (line-beginning-position)))
                       (insert "\n")
                       (setq prev-pos mp)
-                      (setq proc-count (1+ proc-count))
-                      ))
+                      (setq proc-count (1+ proc-count))))
                    (t
                     (insert "[" (car i) "]:")
                     (put-text-property (line-beginning-position) (line-end-position)
                                        'face 'font-lock-function-name-face)
-                    (insert "\n")
-                    ))
+                    (insert "\n")))
 
              (insert "   |" (third i))
 
              (setq line-pos (fourth i))
              (when (>= b-pos line-pos)
-               (set-marker to-pos (line-beginning-position))
-               )
+               (set-marker to-pos (line-beginning-position)))
              (put-text-property (line-beginning-position) (line-end-position)
                                 'cp-pb-target line-pos)
 
-             (insert "\n")
-             )
+             (insert "\n"))
            (goto-char (point-min))
            (end-of-line)
            (insert "\tProc count: " (int-to-string proc-count))
@@ -578,26 +530,22 @@
   (interactive)
   (let ((cur-f (buffer-file-name))
         f f-type subfix f-sans
-        subfixes f-try
-        )
+        subfixes f-try)
     (setq f (file-name-nondirectory cur-f))
     (setq subfix (file-name-extension f))
     (setq f-sans (file-name-sans-extension f))
 
     (cond ((member subfix c-cpp-header-file-subfixes)
-           (setq subfixes c-cpp-src-file-subfixes)
-           )
+           (setq subfixes c-cpp-src-file-subfixes))
           ((member subfix c-cpp-src-file-subfixes)
-           (setq subfixes c-cpp-header-file-subfixes)
-           ))
+           (setq subfixes c-cpp-header-file-subfixes)))
     (when subfixes
       (catch 'loo
         (dolist (sf subfixes)
           (setq f-try (concat f-sans "." sf))
           (when (file-exists-p f-try)
             (find-file f-try)
-            (throw 'loo t)
-            ))))))
+            (throw 'loo t)))))))
 
 (provide 'mycutil)
 

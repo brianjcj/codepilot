@@ -71,11 +71,7 @@
   (when str
     (cond ((> (length str) 0)
            (let ((strs (split-string str "[\t]+" t))
-                 str1 strs-cdr
-                 o pos line
-                 ;; pre-pos
-                 )
-             (when strs
+                 str1 strs-cdr o pos line) (when strs
                (setq str1 (car strs))
                (setq strs-cdr (cdr strs))
                (save-excursion

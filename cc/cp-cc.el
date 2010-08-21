@@ -1,6 +1,24 @@
+;; Copyright (C) 2010  Brian Jiang
+
+;; Author: Brian Jiang <brianjcj@gmail.com>
+;; Keywords: Programming
+;; Version: 0.1
+
+;; This program is free software; you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation, either version 3 of the License, or
+;; (at your option) any later version.
+
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+
+;; You should have received a copy of the GNU General Public License
+;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 (eval-when-compile
-  (require 'cl)
-  )
+  (require 'cl))
 
 (require 'cp-layout)
 (require 'cp-base)
@@ -10,30 +28,24 @@
 
 (defgroup codepilot-cc nil
   "Codepilot for CC"
-  :group 'programming
-  )
+  :group 'programming)
 
 (defcustom codepilot-cc-major-modes
   '(c-mode c++-mode java-mode)
   "List of major modes. The buffer in these major modes will be
 showed in the codepilot sidebar."
   :group 'codepilot-cc
-  :type '(repeat (symbol :tag "Major mode"))
-  )
+  :type '(repeat (symbol :tag "Major mode")))
 
 (defsubst in-codepilot-cc-major-modes? (mm)
-  (memq mm codepilot-cc-major-modes)
-  )
+  (memq mm codepilot-cc-major-modes))
 
 
 (defun cplist-do-kill-on-deletion-marks ()
   ""
   (interactive)
   (let ((case-fold-search t)
-        buf-list
-        s
-        mark-found
-        prompt)
+        buf-list s mark-found prompt)
     (save-excursion
       (save-match-data
         (goto-char (point-min))
@@ -41,9 +53,7 @@ showed in the codepilot sidebar."
           (setq s (match-string 1))
           (setq mark-found t)
           (push s buf-list)
-          (setq prompt (concat prompt s "  "))
-          )
-        ))
+          (setq prompt (concat prompt s "  ")))))
     
     (when (and mark-found
            (y-or-n-p (concat prompt "\nReally delete above buffers? ")))
@@ -51,14 +61,11 @@ showed in the codepilot sidebar."
         (if (get-buffer b)
             (kill-buffer b)
           ;; else, it must be a history list
-          (run-hook-with-args 'cplist-delete-history-entry b)
-          ))
+          (run-hook-with-args 'cplist-delete-history-entry b)))
       (let (sec-pos)
         (save-excursion
           (save-match-data
-            (cplist-kill-del-mark-lines 1 (point-max))
-            )))
-      )))
+            (cplist-kill-del-mark-lines 1 (point-max))))))))
 
 
 (defun cplist-action-cc ()
@@ -107,8 +114,7 @@ showed in the codepilot sidebar."
               (speedbar-disable-update)
               (speedbar 1))
           (setq cplist-type (intern cw))
-          (cplist-update))
-        )
+          (cplist-update)))
        ((looking-at "[A-Za-Z ] \\(.+\\)$")
         (setq buf-name (match-string 1))
         (when (get-buffer buf-name)
@@ -125,13 +131,11 @@ showed in the codepilot sidebar."
 
           (let ((inhibit-codepilot-pre-pop-or-switch-buffer-hook nil))
             (codepilot-pop-or-switch-buffer buf-name))
-          (run-hooks 'cplist-action-hook)
-          ))
+          (run-hooks 'cplist-action-hook)))
        ((looking-at "^\\@")
         ;; fold/unfold it.
         (end-of-line)
-        (cplist-toggle-folding)
-        )))))
+        (cplist-toggle-folding))))))
 
 
 (setq cplist-action-func 'cplist-action-cc)
@@ -142,11 +146,9 @@ showed in the codepilot sidebar."
   (let (pos (loo t) b e)
     (when (looking-at "^[ \t]*$")
       (skip-chars-backward " \t\n")
-      (backward-char)
-      )
+      (backward-char))
     (when (looking-at "\n")
-      (backward-char)
-      )
+      (backward-char))
     
     (save-excursion
       (save-match-data
@@ -158,38 +160,32 @@ showed in the codepilot sidebar."
           (setq b (point))
 
           (cond ((re-search-forward "^@" nil t)
-                 (forward-line 0)
-                 )
+                 (forward-line 0))
                 (t
-                 (goto-char (point-max))
-                 ))
+                 (goto-char (point-max))))
           (skip-chars-backward "\s\n")
           (setq e (point))
           
           (cptree-hide-region b e 'cptree)
 
           (when (> (window-start) b)
-            (let ((current-prefix-arg 4)) (call-interactively 'recenter)))
-          )))))
+            (let ((current-prefix-arg 4)) (call-interactively 'recenter))))))))
 
 (defun cplist-unfold ()
   (interactive)
   (let (ret)
     (dolist (o (overlays-at (if (save-excursion (forward-line 0) (looking-at "^@"))
                                 (line-end-position)
-                              (point)
-                              )))
+                              (point))))
       (when (cptree-delete-overlay o 'cptree)
-        (setq ret t)
-        ))
+        (setq ret t)))
     ret))
 
 (defun cplist-toggle-folding ()
   (interactive)
   (let ((case-fold-search t))
     (unless (cplist-unfold)
-      (cplist-fold)
-      )))
+      (cplist-fold))))
 
 (defun cplist-fold-all ()
   (interactive)
@@ -207,19 +203,15 @@ showed in the codepilot sidebar."
                 (t
                  (setq e (point-max))))
 
-          (cptree-hide-region b e 'cptree)
-          )
+          (cptree-hide-region b e 'cptree))
         (goto-char (point-min))
-        (let ((current-prefix-arg 4)) (call-interactively 'recenter))
-        )
-      )
-    ))
+        (let ((current-prefix-arg 4))
+          (call-interactively 'recenter))))))
 
 (defun cplist-unfold-all ()
   (interactive)
   (dolist (o (overlays-in (point-min) (point-max)))
-    (cptree-delete-overlay o 'cptree)
-    ))
+    (cptree-delete-overlay o 'cptree)))
 
 (defalias 'cplist-unfold-all 'cptree-unfold-all)
 
@@ -234,23 +226,20 @@ showed in the codepilot sidebar."
              (forward-line)
              (insert line)
              (backward-char)
-             (remove-overlays (line-beginning-position) (line-beginning-position 2) 'tag 'cpfilter)
-             )))))))
+             (remove-overlays (line-beginning-position) (line-beginning-position 2) 'tag 'cpfilter))))))))
 
 
 (defun cplist-sort-query-by-last-access ()
   ""
   (interactive)
   (setq cplist-query-sort-type 'last)
-  (cplist-update)
-  )
+  (cplist-update))
 
 (defun cplist-sort-query-by-create ()
   ""
   (interactive)
   (setq cplist-query-sort-type 'create)
-  (cplist-update)
-  )
+  (cplist-update))
 
 
 (defvar cplist-menu
@@ -292,15 +281,12 @@ showed in the codepilot sidebar."
          s-text
          (s-type (if search-type search-type 'id))
          (case-fold-search (not (eq 'id s-type)))
-         ;; text-for-lazy-hl
-         c
-        )
+         c)
 
     ;; (message (format "%s, hl begin, Current Point: %d" (current-time-string) (point)))
     
     (when (= 0 (length text))
-      (error "Search string is empty!")
-      )
+      (error "Search string is empty!"))
     
     (setq codepilot-current-search-text (if (eq 'id s-type) text (downcase text)))
     (setq codepilot-current-search-type search-type)
@@ -313,18 +299,15 @@ showed in the codepilot sidebar."
                (setq s-func 're-search-backward) ;; (setq s-func 'word-search-backward)
                (setq s-func 're-search-forward)) ;; (setq s-func 'word-search-forward))
            ;; (setq text-for-lazy-hl (concat "\\_<" (regexp-quote s-text) "\\_>"))
-           (setq s-text (concat "\\_<" (regexp-quote s-text) "\\_>"))
-           )
+           (setq s-text (concat "\\_<" (regexp-quote s-text) "\\_>")))
           ((eq search-type 'part-id)
            (if backward
                (setq s-func 're-search-backward)
-             (setq s-func 're-search-forward)
-             ))
+             (setq s-func 're-search-forward)))
           (t
            (if backward
                (setq s-func 'search-backward)
-             (setq s-func 'search-forward)
-             )))
+             (setq s-func 'search-forward))))
     (save-match-data
       (save-excursion
         (unless inhibit-codepilot-highlight-2
@@ -332,9 +315,7 @@ showed in the codepilot sidebar."
               (run-with-idle-timer 0.0 nil 'codepilot-highlight-2 (current-buffer))
             (error
              "error in run-with-idle-timer."
-             nil
-             )
-            ))
+             nil)))
         (while my-loop
           (if (not (funcall s-func s-text nil t))
               (progn
@@ -363,8 +344,7 @@ showed in the codepilot sidebar."
                    (setq goto-point (point))
                    (setq my-loop nil)
                    (unless inhibit-codepilot-hl-text
-                     (codepilot-hl-text (match-beginning 0) (match-end 0)))
-                   ))))))
+                     (codepilot-hl-text (match-beginning 0) (match-end 0)))))))))
     (goto-char goto-point)
     ;; (message "after goto, Point: %s" (point))
     (when success
@@ -380,14 +360,12 @@ showed in the codepilot sidebar."
         (backward-char)))
     ;; brian: debug
     ;; (message (format "%s, Point: %d, Current Point: %d" (current-time-string) goto-point (point)))
-    success
-    ))
+    success))
 
 (defun cc-set-search-and-hl-func ()
   (interactive)
   (make-local-variable 'codepilot-search-and-hl-text-func)
-  (setq codepilot-search-and-hl-text-func 'cc-search-and-hl-text)
-  )
+  (setq codepilot-search-and-hl-text-func 'cc-search-and-hl-text))
 
 (add-hook 'c-mode-hook 'cc-set-search-and-hl-func)
 (add-hook 'c++-mode-hook 'cc-set-search-and-hl-func)
@@ -397,8 +375,7 @@ showed in the codepilot sidebar."
   ;; (message (format "When In hl-2: %s, Current Point: %d" (current-time-string) (point)))
   
   (let ((codepilot-mark-tag 'codepilot-highlight-2)
-        s-text
-        )
+        s-text)
     (condition-case nil
         (progn
           (set-buffer buf)
@@ -410,30 +387,22 @@ showed in the codepilot sidebar."
               (widen)
               (codepilot-unmark-all)
               (unless (or (codepilot-string-all-space? codepilot-current-search-text)
-                          (< (length codepilot-current-search-text) 2)
-                          )
+                          (< (length codepilot-current-search-text) 2))
                 (save-match-data
                   (goto-char (point-min))
                   (cond ((eq codepilot-current-search-type 'id)
                          (setq s-text (concat "\\_<" (regexp-quote codepilot-current-search-text) "\\_>"))
                          (while (re-search-forward s-text nil t)
-                           (codepilot-mark-region (match-beginning 0) (match-end 0))
-                           ))
+                           (codepilot-mark-region (match-beginning 0) (match-end 0))))
                         ((eq codepilot-current-search-type 'part-id)
                          (while (re-search-forward codepilot-current-search-text nil t)
-                           (codepilot-mark-region (match-beginning 0) (match-end 0))
-                           ))
+                           (codepilot-mark-region (match-beginning 0) (match-end 0))))
                         (t
                          (while (search-forward codepilot-current-search-text nil t)
-                           (codepilot-mark-region (match-beginning 0) (match-end 0))
-                           )
-                         )))
-                ))))
+                           (codepilot-mark-region (match-beginning 0) (match-end 0))))))))))
       (error
        (message "error in codepilot-highlight-2")
-       nil
-       )
-      ))
+       nil)))
   ;; (message (format "When out hl-2: %s, Current Point: %d" (current-time-string) (point)))
   )
 
@@ -470,9 +439,7 @@ showed in the codepilot sidebar."
                (delete-region (point)
                               (progn
                                 (forward-line 1)
-                                (point)))
-                
-               ))))))))
+                                (point)))))))))))
 
 (add-hook 'kill-buffer-hook 'codepilot-kill-buffer-action)
 
@@ -502,8 +469,7 @@ showed in the codepilot sidebar."
       :group 'codepilot
       (if codepilot-ro-mode
           (setq buffer-read-only t)
-        (setq buffer-read-only nil))
-      )
+        (setq buffer-read-only nil)))
 
 (defvar codepilot-ro-menu
   '("CPRO"
@@ -552,8 +518,7 @@ showed in the codepilot sidebar."
           (t
            (remove-hook 'c-mode-hook 'codepilot-ro-mode)
            (remove-hook 'c++-mode-hook 'codepilot-ro-mode)
-           (remove-hook 'java-mode-hook 'codepilot-ro-mode)))
-    ))
+           (remove-hook 'java-mode-hook 'codepilot-ro-mode)))))
 
 (defalias 'cpro 'codepilot-ro-toggle-globally)
 

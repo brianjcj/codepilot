@@ -74,12 +74,10 @@ precede it)."
     (dolist (o (overlays-at (if (python-open-block-statement-p)
                                 (save-excursion
                                   (python-end-of-statement)
-                                  (point)
-                                  )
+                                  (point))
                                 (point))))
       (when (cptree-delete-overlay o 'cptree)
-        (setq ret t)
-        ))
+        (setq ret t)))
     (unless ret
       (save-excursion
         (unless (python-open-block-statement-p)
@@ -88,9 +86,7 @@ precede it)."
         (setq b (point))
         (python-end-of-block)
         (setq e (1- (point)))
-        (cptree-hide-region b e 'cptree)
-        )))
-  )
+        (cptree-hide-region b e 'cptree)))))
 
 (define-key python-mode-map [(f10)] 'mypython-fold/unfold-block)
 

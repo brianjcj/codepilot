@@ -1,6 +1,24 @@
+;; Copyright (C) 2010  Brian Jiang
+
+;; Author: Brian Jiang <brianjcj@gmail.com>
+;; Keywords: Programming
+;; Version: 0.1
+
+;; This program is free software; you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation, either version 3 of the License, or
+;; (at your option) any later version.
+
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+
+;; You should have received a copy of the GNU General Public License
+;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 (eval-when-compile
-  (require 'cl)
-  )
+  (require 'cl))
 
 (require 'cphistory)
 (require 'cp-layout)
@@ -50,8 +68,7 @@
   (make-local-variable 'font-lock-keywords-case-fold-search)
   (setq font-lock-keywords-case-fold-search t)
   (make-local-variable 'font-lock-defaults)
-  (setq font-lock-defaults '(cplist-font-lock-keywords t))
-  )
+  (setq font-lock-defaults '(cplist-font-lock-keywords t)))
 
 (defface cplist-item-face
   '((default (:inherit font-lock-type-face)))
@@ -80,19 +97,15 @@
 
    (list "^ +\\(.+?\\) \\(\\[.+?\\]\\)$"
          '(1 'cplist-item-face)
-         '(2 'cplist-dir-face)
-         )
+         '(2 'cplist-dir-face))
    
    (list "^ +\\(.+\\)$"
-         '(1 'cplist-item-face)
-         )
+         '(1 'cplist-item-face))
    (list "@ \\(.+\\)$"
-         '(1 'cplist-head-face)
-         )
+         '(1 'cplist-head-face))
    (list "\\[.+?\\]"
-         '(0 'link)
-         )
-   )
+         '(0 'link)))
+  
   "font-lock keywords setting for cpxref buffers.")
 
 
@@ -102,15 +115,12 @@
   "will be overrided by various impls."
   (interactive)
   (when cplist-action-func
-    (funcall cplist-action-func)
-    )
-  )
+    (funcall cplist-action-func)))
 
 (defun cplist-mouse-click (event)
   (interactive "e")
   (mouse-set-point event)
-  (cplist-action)
-  )
+  (cplist-action))
 
 (defun cplist-enter ()
   (interactive)
@@ -126,10 +136,8 @@
       (forward-line 0)
       (when (looking-at "[A-Za-Z ] ")
         (replace-match "D " nil t)
-        (forward-line)
-        ))
-    (set-buffer-modified-p nil)
-    ))
+        (forward-line)))
+    (set-buffer-modified-p nil)))
 
 (defun cplist-unmark ()
   ""
@@ -140,12 +148,9 @@
     (save-match-data
       (forward-line 0)
       (when (looking-at "[A-Za-Z] ")
-        (replace-match "  " nil t)
-        )
-      (forward-line)
-      )
-    (set-buffer-modified-p nil)
-    ))
+        (replace-match "  " nil t))
+      (forward-line))
+    (set-buffer-modified-p nil)))
 
 (defun cplist-mark-all-for-delete ()
   ""
@@ -159,10 +164,8 @@
       (when (re-search-forward "^@" nil t)
         (while (re-search-forward "^[A-Za-Z ] " nil t)
           (replace-match "D " nil t)
-          (forward-line)
-        )))
-    (set-buffer-modified-p nil)
-    ))
+          (forward-line))))
+    (set-buffer-modified-p nil)))
 
 (defun cplist-kill-del-mark-lines (b e &optional sec-list)
   (let (n)
@@ -172,8 +175,7 @@
         (with-modify-in-readonly
             (goto-char b)
           (while (re-search-forward "^D \\(.+\\)$" nil t)
-            (delete-region (line-beginning-position n) (line-beginning-position 2))
-            ))))))
+            (delete-region (line-beginning-position n) (line-beginning-position 2))))))))
 
 
 ;; (defcustom cplist-side-window-default-size 38
@@ -210,8 +212,7 @@
 
           (run-hooks 'cplist-win-del)
           ;; (kill-buffer cplist-buf-name)
-          (cplist-del-dedicated-win)
-          )
+          (cplist-del-dedicated-win))
 
       (cplist-del-dedicated-win)
 
@@ -221,25 +222,20 @@
       (condition-case nil
           (split-window nil cplist-side-window-size t)
         (error
-         (split-window-horizontally)
-         )
-        )
+         (split-window-horizontally)))
       (cplist-update)
       (switch-to-buffer cplist-buf-name)
       (setq buffer-read-only t)
       (cplist-mode)
       (run-hooks 'cplist-turn-on-mode-hook)
       (set-window-dedicated-p (selected-window) t)
-      
-      (run-hooks 'cplist-win-added)
-      )))
+      (run-hooks 'cplist-win-added))))
 
 (defun cplist-update ()
   ""
   (interactive)
   (let ((buf (get-buffer-create cplist-buf-name))
-        win
-        )
+        win)
     (with-current-buffer buf
       (with-modify-in-readonly
         (erase-buffer)
@@ -251,9 +247,7 @@
         (cpfilter-add-edit-entry-field)
         (setq win (get-buffer-window cplist-buf-name))
         (when win
-          (select-window win))
-        ))
-    ))
+          (select-window win))))))
 
 
 (define-key cplist-mode-map [mouse-3] 'cplist-mouse-click)
@@ -291,26 +285,20 @@
 (global-set-key [(f8)] 'cplist-side-window)
 
 
-
-
 (defun cplist-mode-del-window ()
   ""
   (interactive)
   (let ((win (get-buffer-window cplist-buf-name)))
     (when win
-      (delete-window win)
-        )
-    ))
+      (delete-window win))))
 
 (defun cplist-list-buffer (mode)
     (let (mm)
     (dolist (b (buffer-list))
       (setq mm (with-current-buffer b major-mode))
       (when (eq mm mode)
-        (insert "  " (concat (buffer-name b) "\n"))
-        )))
-  (insert "\n")
-  )
+        (insert "  " (concat (buffer-name b) "\n")))))
+  (insert "\n"))
 
 (defun cplist-sort-query-list-by-name ()
   ""
@@ -318,8 +306,7 @@
   (let ((case-fold-search t)
         beg end
         (inhibit-read-only t)
-        (buffer-undo-list t)
-        )
+        (buffer-undo-list t))
     (save-excursion
       (save-match-data
         (goto-char (point-min))
@@ -328,15 +315,11 @@
         (setq beg (point))
         (setq end beg)
         (when (re-search-forward "^$" nil t)
-          (setq end (point))
-          )
+          (setq end (point)))
         (unless (= beg end)
-          (sort-lines nil beg end)
-          )
-        (setq cplist-query-sort-type 'name)
-        ))
-    (set-buffer-modified-p nil)
-    ))
+          (sort-lines nil beg end))
+        (setq cplist-query-sort-type 'name)))
+    (set-buffer-modified-p nil)))
 
 (defun cplist-sort-query-by-id-name ()
   ""
@@ -344,8 +327,7 @@
   (let ((case-fold-search t)
         beg end
         (inhibit-read-only t)
-        (buffer-undo-list t)
-        )
+        (buffer-undo-list t))
     (save-excursion
       (save-match-data
         (goto-char (point-min))
@@ -354,15 +336,11 @@
         (setq beg (point))
         (setq end beg)
         (when (re-search-forward "^$" nil t)
-          (setq end (point))
-          )
+          (setq end (point)))
         (unless (= beg end)
-          (sort-fields 2 beg end)
-          )
-        (setq cplist-query-sort-type 'id-name)
-        ))
-    (set-buffer-modified-p nil)
-    ))
+          (sort-fields 2 beg end))
+        (setq cplist-query-sort-type 'id-name)))
+    (set-buffer-modified-p nil)))
 
 
 
@@ -374,11 +352,8 @@
     (if win
         (progn
           (setq edges (window-edges win))
-          (setq cplist-side-window-size (- (nth 2 edges) (nth 0 edges)))
-          )
-      (error "No IDList buffer now.")
-        )
-    ))
+          (setq cplist-side-window-size (- (nth 2 edges) (nth 0 edges))))
+      (error "No IDList buffer now."))))
 
 
 
@@ -392,8 +367,7 @@
            ,tempbeg ,tempend ,tempvar
            (inhibit-read-only t)
            (buffer-undo-list t)
-           ,mylist
-           )
+           ,mylist)
        (save-excursion
          (save-match-data
            (goto-char (point-min))
@@ -403,8 +377,7 @@
              (setq ,tempend ,tempbeg)
 
              (when (re-search-forward ,section-end-regexp nil t)
-               (setq ,tempend (point))
-               )
+               (setq ,tempend (point)))
              (unless (= ,tempbeg ,tempend)
                (delete-region ,tempbeg ,tempend))
 
@@ -412,20 +385,16 @@
                (when (eq (with-current-buffer ,tempbuf
                            ,(if variable
                                 `(setq ,tempvar ,variable)
-                              ()
-                              )
+                              ())
                            major-mode)
                          ,mode)
                  (push
                   ,(if variable
                        `(cons ,tempvar (buffer-name ,tempbuf))
-                     `(buffer-name ,tempbuf)
-                     )
-                  ,mylist)
-                 ))
+                     `(buffer-name ,tempbuf))
+                  ,mylist)))
              ,@body
-             (set-buffer-modified-p nil)
-             ))))))
+             (set-buffer-modified-p nil)))))))
 
 
 
@@ -445,8 +414,7 @@
             (enlarge-window-horizontally (- cplist-side-window-size width))
           (setq cplist-side-window-size width)
           (shrink-window-horizontally (- width window-min-width))))
-      (cplist-side-window)
-      )))
+      (cplist-side-window))))
 
 
 (provide 'cplist)

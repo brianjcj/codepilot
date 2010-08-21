@@ -355,8 +355,7 @@
         (goto-char (point-min))
         (while (re-search-forward "@" nil t)
           (when (setq e (get-text-property (line-end-position) 'cpimenu-block-end))
-            (cptree-hide-region (line-end-position) e 'cptree))
-          )
+            (cptree-hide-region (line-end-position) e 'cptree)))
         (goto-char (point-min))
         (let ((current-prefix-arg 4)) (call-interactively 'recenter))))))
 
@@ -419,8 +418,7 @@
 (defvar cpimenu-win-height 20)
 
 (defun cpimenu-show-buffer (buf)
-  (cond ((get-buffer-window cpimenu-buf-name)
-         )
+  (cond ((get-buffer-window cpimenu-buf-name))
         (t
          (multiple-value-bind (ret sidebar code-win bottom-win)
              (codepilot-window-layout-wise)
@@ -533,8 +531,7 @@
   (let ((taglist (semantic-find-tag-by-overlay)))
     (when taglist
       (let* ((name (semantic-default-which-function taglist))
-             (cur-tag (car (nreverse taglist)))
-            )
+             (cur-tag (car (nreverse taglist))))
         (cons name (overlay-start (nth 4 cur-tag)))))))
 
 (defun cpimenu-which-func (&optional taglist) ;; =ToSync= with which-func.el
@@ -614,12 +611,10 @@
                (make-local-variable 'cpimenu-need-update-due-to-parse-delay)
                (setq cpimenu-need-update-due-to-parse-delay t)
                (setq update? t)
-               (message "Wait for semantic parsing!")
-               )
+               (message "Wait for semantic parsing!"))
               (t
                (setq update? t)
-               (message "CPImenu update!")
-               ))
+               (message "CPImenu update!")))
         (when tree-updated?
           (make-local-variable 'cpimenu-need-update-due-to-parse-delay)
           (setq cpimenu-need-update-due-to-parse-delay nil)))
@@ -722,8 +717,7 @@
   (add-hook 'cplist-win-added 'cpimenu-when-cplist-win-added)
   (add-hook 'which-func-functions 'cpimenu-which-func)
   (ad-activate 'scroll-bar-toolkit-scroll)
-  (ad-activate 'mwheel-scroll)
-  )
+  (ad-activate 'mwheel-scroll))
 
 (defun cpimenu-deactivate ()
   (interactive)
@@ -732,7 +726,6 @@
   (remove-hook 'which-func-functions 'cpimenu-which-func)
   (ad-deactivate 'scroll-bar-toolkit-scroll)
   (ad-deactivate 'mwheel-scroll)
-  (ad-deactivate 'semantic-default-which-function)
-  )
+  (ad-deactivate 'semantic-default-which-function))
 
 (provide 'cpimenu)

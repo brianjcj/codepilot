@@ -76,8 +76,7 @@
     (goto-char pos)
     ;; brian: update func in mode line immediately.
     (which-func-update)
-    (codepilot-highlight (point-min) (point-max) regexp t t)
-    ))
+    (codepilot-highlight (point-min) (point-max) regexp t t)))
 
 
 (define-key occur-mode-map "0" 'delete-window)
@@ -85,8 +84,7 @@
 (define-key occur-mode-map "q" (lambda ()
                                  (interactive)
                                  (kill-this-buffer)
-                                 (delete-window)
-                                 ))
+                                 (delete-window)))
 
 
 ;; Note: this hook shall be called before occur-rename-buffer.
@@ -94,8 +92,7 @@
   ""
   (interactive)
   ;(fit-window-to-buffer (get-buffer-window (get-buffer "*Occur*")) (/ (frame-height) 2))
-  (shrink-window-if-larger-than-buffer (get-buffer-window (get-buffer "*Occur*")))
-  )
+  (shrink-window-if-larger-than-buffer (get-buffer-window (get-buffer "*Occur*"))))
 
 (add-hook 'occur-hook 'fit-occur-buf)
 (add-hook 'occur-hook 'occur-rename-buffer :append)

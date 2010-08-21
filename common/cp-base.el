@@ -1,6 +1,24 @@
+;; Copyright (C) 2010  Brian Jiang
+
+;; Author: Brian Jiang <brianjcj@gmail.com>
+;; Keywords: Programming
+;; Version: 0.1
+
+;; This program is free software; you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation, either version 3 of the License, or
+;; (at your option) any later version.
+
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+
+;; You should have received a copy of the GNU General Public License
+;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 (eval-when-compile
-  (require 'cl)
-  )
+  (require 'cl))
 
 (require 'easymenu)
 (require 'remember)
@@ -54,18 +72,15 @@ not really placed in the text, it is just shown in the overlay"
   `(let ((inhibit-read-only t)
          (buffer-undo-list t))
      ,@body
-     (set-buffer-modified-p nil)
-     ))
+     (set-buffer-modified-p nil)))
 
 (defsubst codepilot-string-all-space? (str)
   (let ((ret t))
     (dotimes (i (length str))
       (unless (eq ?\s (aref str i))
         (setq ret nil)
-        (return)
-        ))
-    ret
-    ))
+        (return)))
+    ret))
 
 (defsubst codepilot-goto-line (line)
   (goto-char (point-min)) (forward-line (1- line)))
@@ -99,19 +114,15 @@ not really placed in the text, it is just shown in the overlay"
           (switch-to-buffer buf))
          (otherwise
           (select-window code-win)
-          (switch-to-buffer buf))
-         ))
+          (switch-to-buffer buf))))
       ((:window-layout-1&2+
         :window-layout-3+)
 
        (cond ((eq type :cpimenu)
-              (pop-to-buffer buf)
-              )
+              (pop-to-buffer buf))
              (t
               (select-window code-win)
-              (switch-to-buffer buf)
-              )
-             )
+              (switch-to-buffer buf)))
        (switch-to-buffer buf))
       (otherwise
        (case type
@@ -149,9 +160,7 @@ not really placed in the text, it is just shown in the overlay"
            (switch-to-buffer buf))
           (otherwise
            (other-window 1)
-           (switch-to-buffer buf)
-           )))
-      )))
+           (switch-to-buffer buf)))))))
 
 
 
@@ -200,9 +209,7 @@ not really placed in the text, it is just shown in the overlay"
 (defun codepilot-search-and-hl-text (text &optional backward search-type class-id)
   ""
   (when codepilot-search-and-hl-text-func
-    (funcall codepilot-search-and-hl-text-func text backward search-type class-id)
-    )
-  )
+    (funcall codepilot-search-and-hl-text-func text backward search-type class-id)))
 
 (defun codepilot-search-hl-again-f ()
   ""
@@ -211,8 +218,7 @@ not really placed in the text, it is just shown in the overlay"
       (progn
         (cond (codepilot-hl-text-overlay
                (if (= (point) (overlay-start codepilot-hl-text-overlay))
-                   (forward-char))
-               )
+                   (forward-char)))
               (t
                (forward-line 0)))
 
@@ -224,19 +230,16 @@ not really placed in the text, it is just shown in the overlay"
                  t)
                 (t
                  (message "Reach the end.")
-                 nil
-                 ))))
+                 nil))))
       (message (concat "Search text not set." codepilot-current-search-text "???"))
-      nil
-      ))
+      nil))
 
 (defun codepilot-search-hl-again-b ()
   ""
   (interactive)
   (if (/= 0 (length codepilot-current-search-text))
       (progn
-        (cond (codepilot-hl-text-overlay
-               )
+        (cond (codepilot-hl-text-overlay)
               (t
                (end-of-line)))
 
@@ -245,16 +248,12 @@ not really placed in the text, it is just shown in the overlay"
                                             codepilot-current-search-type)
                  (overlay-put codepilot-hl-text-overlay 'face 'codepilot-hl-text-face)
                  (overlay-put codepilot-hl-text-overlay 'priority 1001)
-                 t
-                 )
+                 t)
                 (t
                  (message "Reach the file start.")
-                 nil
-                 ))))
+                 nil))))
     (message "Search text not set.")
-    nil
-
-    ))
+    nil))
 
 (defun codepilot-search-hi (text)
   ""
@@ -281,12 +280,10 @@ not really placed in the text, it is just shown in the overlay"
 ;;       nil nil cur))
 
     (completing-read "Search type: ([id|comment|string|literal]): "
-                     '("id" "comment" "string" "literal") nil t "id")
-    ))
+                     '("id" "comment" "string" "literal") nil t "id")))
 
   (when (= 0 (length text))
-    (error "Search string is empty!!!")
-    )
+    (error "Search string is empty!!!"))
 
   (unless (looking-at "\\_<")
     (re-search-backward "\\_<" nil t))
@@ -301,11 +298,9 @@ not really placed in the text, it is just shown in the overlay"
               ((string= type "literal")
                'literal)
               (t
-               codepilot-current-search-type)
-              ))
+               codepilot-current-search-type)))
   (unless (codepilot-search-and-hl-text text nil codepilot-current-search-type)
-    (message "Search failed."))
-  )
+    (message "Search failed.")))
 
 (defun codepilot-search-hi-string (text)
   (interactive
@@ -321,8 +316,7 @@ not really placed in the text, it is just shown in the overlay"
   (interactive)
   (dolist (o (overlays-at (point)))
     (cptree-delete-overlay o 'cptree))
-  t
-  )
+  t)
 
 (defvar cptree--overlay-keymap nil "keymap for folding overlay")
 
@@ -330,23 +324,20 @@ not really placed in the text, it is just shown in the overlay"
   (let ((map (make-sparse-keymap)))
     (define-key map [mouse-1] 'cptree-ov-delete)
     (define-key map "\r" 'cptree-ov-delete)
-    (setq cptree--overlay-keymap map)
-    ))
+    (setq cptree--overlay-keymap map)))
 
 
 (defun cptree-delete-overlay(o prop)
   ""
   (when (eq (overlay-get o 'cptree-tag) prop)
-    (delete-overlay o)
-    t
+    (delete-overlay o) t
     ))
 
 (defun cptree-point-at-fold-p (pos)
   (catch 'loo
     (dolist (o (overlays-at pos))
       (when (eq (overlay-get o 'cptree-tag) 'cptree)
-        (throw 'loo t)
-        ))))
+        (throw 'loo t)))))
 
 
 (defun cptree-hide-region (from to prop)
@@ -363,12 +354,10 @@ overlay on the hide-region-overlays \"ring\""
                            my-hide-region-before-string
                           (1- (count-lines (overlay-start new-overlay)
                                            (overlay-end new-overlay)))
-                          my-hide-region-after-string
-                          )))
+                          my-hide-region-after-string)))
     (overlay-put new-overlay 'priority (- 0 from))
     (overlay-put new-overlay 'keymap cptree--overlay-keymap)
-    (overlay-put new-overlay 'pointer 'hand)
-    ))
+    (overlay-put new-overlay 'pointer 'hand)))
 
 
 (defun cptree-unfold-all()
@@ -376,16 +365,14 @@ overlay on the hide-region-overlays \"ring\""
   (interactive)
   (save-excursion
     (dolist (o (overlays-in (point-min) (point-max)))
-      (cptree-delete-overlay o 'cptree)
-      )))
+      (cptree-delete-overlay o 'cptree))))
 
 
 (defun codepilot-at-tagged-overlay-p (pos tag)
   (catch 'loo
     (dolist (o (overlays-at pos))
       (when (eq (overlay-get o 'tag) tag)
-        (throw 'loo t)
-        ))))
+        (throw 'loo t)))))
 
 ;;
 (require 'image)

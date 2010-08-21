@@ -51,12 +51,10 @@
       (setq hl-type nil)
       (when (string-match "^\\(.+?\\):\\([0-9]+\\)$" tagname)
         (setq linenum (string-to-number (match-string-no-properties 2 tagname)))
-        (setq tagname (match-string-no-properties 1 tagname))
-        ))
+        (setq tagname (match-string-no-properties 1 tagname))))
      ((equal flag "g")
       (setq prefix "G) ")
-      (setq hl-type nil)
-      )
+      (setq hl-type nil))
      ((equal flag "I")
       (setq prefix "I) "))
      ((equal flag "s")
@@ -71,8 +69,7 @@
     (when current-prefix-arg
       (setq local-option t)
       (setq option (concat option "l"))
-      (cd (read-directory-name "-l option is on. Choose the local dir: "))
-      )
+      (cd (read-directory-name "-l option is on. Choose the local dir: ")))
 
     (setq buf-name (if local-option
                        (concat prefix tagname " [" default-directory "]")
@@ -92,8 +89,7 @@
                   (forward-line)
                   (let ((mygtags-goto-linenum linenum))
                     (gtags-select-it nil t)) ;; do not delete
-                  ))
-           )
+                  )))
           (t
            (setq buffer (generate-new-buffer (generate-new-buffer-name buf-name)))
            (codepilot-pop-or-switch-buffer buffer)
@@ -138,13 +134,11 @@
                 (mygtags-refine-output)
                 (mygtags-add-attribute tagname local-option option)
                 (run-hooks 'mygtags-output-done-hook)
-                (mygtags-next-file)
-                )
+                (mygtags-next-file))
                ;; serial number for sort by the create time.
                (make-local-variable 'cptree-serial-number)
                (setq cptree-serial-number cptree-serial-no-last)
-               (setq cptree-serial-no-last (1+ cptree-serial-no-last))
-               ))
+               (setq cptree-serial-no-last (1+ cptree-serial-no-last))))
              (when (= lines 1)
                (message "Searching %s ... Done" tagname)
                ;; (gtags-select-it t)
@@ -165,8 +159,7 @@
            (setq pos (point))))
     (dolist (o (overlays-at pos))
       (when (cptree-delete-overlay o 'cptree)
-        (setq ret t)
-        ))
+        (setq ret t)))
     ret))
 
 (defun mygtags-fold ()
@@ -174,11 +167,9 @@
   (let (b e str)
     (when (looking-at "^[ \t]*$")
       (skip-chars-backward " \t\n")
-      (backward-char)
-      )
+      (backward-char))
     (when (looking-at "\n")
-      (backward-char)
-      )
+      (backward-char))
     (save-excursion
       (save-match-data
         (forward-line 0)
@@ -188,18 +179,15 @@
         (forward-line)
         (if (re-search-forward "\\(^[ \t]*$\\|^[^\s\n]+\\)" nil t)
             (setq e (1- (line-beginning-position)))
-          (setq e (point-max))
-          )
-        (cptree-hide-region b e 'cptree)
-        ))))
+          (setq e (point-max)))
+        (cptree-hide-region b e 'cptree)))))
 
 
 (defun mygtags-toggle-folding ()
   (interactive)
   (let ((case-fold-search t))
     (unless (mygtags-unfold)
-      (mygtags-fold)
-      )))
+      (mygtags-fold))))
 
 
 (defun mygtags-fold-all ()
@@ -214,11 +202,9 @@
           (setq pos-p (line-end-position))
           (while (re-search-forward "^[^\s\n]+" nil t)
             (cptree-hide-region pos-p (1- (line-beginning-position)) 'cptree)
-            (setq pos-p (line-end-position))
-            )
+            (setq pos-p (line-end-position)))
           (when (re-search-forward "^$" nil t)
-            (cptree-hide-region pos-p (point) 'cptree)
-            ))))))
+            (cptree-hide-region pos-p (point) 'cptree)))))))
 
 
 (defun gtags-select-it (delete &optional not-mark)
@@ -232,13 +218,11 @@
           (setq line (string-to-number (gtags-match-string 2)))
           (setq file (gtags-match-string 3))
           (setq goto-ln? (eq ?F (aref (buffer-name) 0)))
-          (setq valid t)
-          )
+          (setq valid t))
       (if (looking-at "^[^\s\n]+$")
           (progn
             (end-of-line)
-            (mygtags-toggle-folding)
-            )
+            (mygtags-toggle-folding))
         
         (when (looking-at "^  *\\([0-9]+\\)|")
           (setq line (string-to-number (match-string-no-properties 1)))
@@ -254,8 +238,7 @@
     (if (not valid)
         (progn
           ;; (gtags-pop-context)
-          nil
-          )
+          nil)
       ;;
       ;; Why should we load new file before killing current-buffer?
       ;;
@@ -272,9 +255,7 @@
             (let ((inhibit-codepilot-pre-pop-or-switch-buffer-hook not-mark))
               (codepilot-pop-or-switch-buffer buf)
               (when not-mark
-                (bury-buffer prev-buffer))
-              )
-            ))
+                (bury-buffer prev-buffer)))))
         
         (if delete (kill-buffer prev-buffer)))
       (setq gtags-current-buffer (current-buffer))
@@ -322,8 +303,7 @@
 (defun mygtags-next-visible-file-line ()
   (let (s-res)
     (while (and (setq s-res (re-search-forward "^[^\s\n]+" nil t))
-                (codepilot-at-tagged-overlay-p (point) 'mygtags)
-                ))
+                (codepilot-at-tagged-overlay-p (point) 'mygtags)))
     s-res))
 
 (defun mygtags-next-file ()
@@ -334,8 +314,7 @@
       (save-match-data
         (forward-line 0)
         (when (mygtags-next-visible-file-line)
-          (setq pos (point)))
-        ))
+          (setq pos (point)))))
     (if pos
         (goto-char pos)
       (goto-char (point-min))
@@ -344,8 +323,7 @@
     (end-of-line)
     (when (cptree-point-at-fold-p (point))
       (mygtags-unfold))
-    (forward-line)
-    ))
+    (forward-line)))
 
 
 (defun mygtags-list-sort-by-create ()
@@ -364,11 +342,8 @@
                                  )))
      
      (dolist (b1 m-list)
-       (insert "  " (cdr b1) "\n")
-       )
-     ))
-  (setq cplist-query-sort-type 'create)
-  )
+       (insert "  " (cdr b1) "\n"))))
+  (setq cplist-query-sort-type 'create))
 
 ;; re-structure the global output
 (defun mygtags-parse-output ()
@@ -388,12 +363,10 @@
                             (match-string-no-properties 1)))
           (if (string= fn last-fn)
               (progn
-                (push entry cur-fl)
-                )
+                (push entry cur-fl))
             (push (list last-fn (nreverse cur-fl)) ll)
             (setq cur-fl (list entry))
-            (setq last-fn fn)
-            ))
+            (setq last-fn fn)))
         (push (list last-fn (nreverse cur-fl)) ll)
         (nreverse ll)))))
 
@@ -409,8 +382,7 @@
         (dolist (entry (second ff))
           (insert (propertize (format " %5d|" (string-to-number (car entry)))
                               'face 'mygtags-linenum-face))
-          (insert (second entry) "\n")
-          ))
+          (insert (second entry) "\n")))
       (insert "\n"))))
 
 ;; make gtags select-mode
@@ -453,8 +425,7 @@ Turning on Gtags-Select mode calls the value of the variable
           (forward-char -1))
         (while (looking-at "[0-9A-Za-z_]")
           (forward-char -1))
-        (forward-char 1)
-        ))
+        (forward-char 1)))
       (if (and (bolp) (looking-at gtags-definition-regexp))
           (goto-char (match-end 0)))
       (if (looking-at gtags-symbol-regexp)
@@ -468,8 +439,7 @@ Turning on Gtags-Select mode calls the value of the variable
   (let (input)
     (setq input (completing-read "GTag: " 'gtags-completing-gtags
                                  nil nil nil gtags-history-list))
-    (insert input)
-    ))
+    (insert input)))
 
 (defun mygtags-insert-gsym ()
   ""
@@ -477,8 +447,7 @@ Turning on Gtags-Select mode calls the value of the variable
   (let (input)
     (setq input (completing-read "GSym: " 'gtags-completing-gsyms
                                  nil nil nil gtags-history-list))
-    (insert input)
-    ))
+    (insert input)))
 
 
 (defvar mygtags-auto-flush-regexp nil)
@@ -496,8 +465,7 @@ Turning on Gtags-Select mode calls the value of the variable
 
 (defun mygtags-show-all ()
   (interactive)
-  (remove-overlays (point-min) (point-max) 'tag 'mygtags)
-  )
+  (remove-overlays (point-min) (point-max) 'tag 'mygtags))
 
 (defun mygtags-show-files-if (func)
   (save-excursion
@@ -523,14 +491,12 @@ Turning on Gtags-Select mode calls the value of the variable
                      (progn
                        (setq e (1- (point))))
                    (setq e (progn (re-search-forward "^$") (point)))
-                   (setq loo nil)
-                   )
+                   (setq loo nil))
                  (remove-overlays b e 'tag 'mygtags)
                  )
                 (t
                  (forward-line)
-                 (setq loo (re-search-forward "^[^\s\n]\\{1\\}" nil t))
-                 )))))))
+                 (setq loo (re-search-forward "^[^\s\n]\\{1\\}" nil t)))))))))
 
 (defun mygtags-flush-files (ss)
   (interactive "sHide pathes contain (regex) : ")
@@ -555,16 +521,13 @@ Turning on Gtags-Select mode calls the value of the variable
                      (progn
                        (setq e (1- (point))))
                    (setq e (progn (re-search-forward "^$") (point)))
-                   (setq loo nil)
-                   )
+                   (setq loo nil))
                  (setq o (make-overlay b e))
                  (overlay-put o 'tag 'mygtags)
-                 (overlay-put o 'invisible t)
-                 )
+                 (overlay-put o 'invisible t))
                 (t
                  (forward-line)
-                 (setq loo (re-search-forward "^[^\s\n]\\{1\\}" nil t))
-                 )))))))
+                 (setq loo (re-search-forward "^[^\s\n]\\{1\\}" nil t)))))))))
 
 (defun mygtags-keep-files (ss)
   (interactive "sShow only pathes contain (regex) : ")
@@ -579,8 +542,7 @@ Turning on Gtags-Select mode calls the value of the variable
                                         (goto-char pos)
                                         (re-search-forward
                                          mygtags-auto-show-only-regexp
-                                         (line-end-position) t)
-                                        ))))))
+                                         (line-end-position) t)))))))
   (mygtags-auto-flush))
 
 (defun mygtags-auto-flush ()
@@ -601,8 +563,7 @@ Turning on Gtags-Select mode calls the value of the variable
 (defun mygtags-set-auto-flush-regexp (regex)
   (interactive
    (list
-    (read-string "Regexp: " mygtags-auto-flush-regexp nil)
-    ))
+    (read-string "Regexp: " mygtags-auto-flush-regexp nil)))
   (if (string= regex "")
       (setq mygtags-auto-flush-regexp nil)
     (setq mygtags-auto-flush-regexp regex)))
@@ -610,8 +571,7 @@ Turning on Gtags-Select mode calls the value of the variable
 (defun mygtags-set-auto-show-only-regexp (regex)
   (interactive
    (list
-    (read-string "Regexp: " mygtags-auto-show-only-regexp nil)
-    ))
+    (read-string "Regexp: " mygtags-auto-show-only-regexp nil)))
   (if (string= regex "")
       (setq mygtags-auto-show-only-regexp nil)
     (setq mygtags-auto-show-only-regexp regex)))
@@ -667,8 +627,7 @@ Turning on Gtags-Select mode calls the value of the variable
 (define-key gtags-mode-map [mouse-2] (lambda (e)
                                        (interactive "e")
                                        (mouse-set-point e)
-                                       (hs-toggle-hiding)
-                                       ))
+                                       (hs-toggle-hiding)))
 
 (define-key gtags-select-mode-map [mouse-3] 'gtags-select-tag-by-event)
 (define-key gtags-select-mode-map [tab] 'mygtags-next-file)
@@ -702,8 +661,7 @@ Turning on Gtags-Select mode calls the value of the variable
     ["Insert gsym" mygtags-insert-gsym t]
     "-"
     ["Visit-rootdir" gtags-visit-rootdir t]
-    )
-  )
+    ))
 
 
 (add-hook 'gtags-select-mode-hook 'codepilot-ro-mode)

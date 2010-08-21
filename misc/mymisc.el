@@ -15,6 +15,5 @@
       (setq mark-ring (nreverse mark-ring))
       (set-marker (mark-marker) (+ 0 (pop mark-ring)) (current-buffer))
       (goto-char (car mark-ring))
-      (setq mark-ring (nreverse mark-ring))
-      )))
+      (setq mark-ring (nreverse mark-ring)))))
 

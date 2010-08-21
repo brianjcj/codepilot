@@ -1,3 +1,23 @@
+;; Copyright (C) 2010  Brian Jiang
+
+;; Author: Brian Jiang <brianjcj@gmail.com>
+;; Keywords: Programming
+;; Version: 0.1
+
+;; This program is free software; you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation, either version 3 of the License, or
+;; (at your option) any later version.
+
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+
+;; You should have received a copy of the GNU General Public License
+;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+
 (eval-when-compile
   (require 'cl))
 
@@ -85,8 +105,7 @@
                 (save-selected-window
                   (select-window code-win)
                   (unless (or (codepilot-layout-custom-buffer? (buffer-name))
-                              (string= (buffer-name) "*info*")
-                              )
+                              (string= (buffer-name) "*info*"))
                     (split-window-vertically))))
                ((:window-layout-1&2+
                  :window-layout-3+
@@ -178,8 +197,7 @@
 
 (defadvice delete-other-windows (around codepilot-windown-layout (&optional window))
   ;; don't delete the dedicated windows
-  (let ((cur-win (if window window (selected-window)))
-        )
+  (let ((cur-win (if window window (selected-window))))
     (dolist (w (window-list))
       (unless (or (eq w cur-win)
                   (window-dedicated-p w))
