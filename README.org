@@ -1,2 +1,10 @@
-Update later :)
+If you want to have a try, just:
+
+emacs -q &
+and then:
+(load "yourdirxxxxxxxxx/codepilot/myinit.el")
+
+----
+
+Detailed info will be Updated later :)
 
