@@ -119,8 +119,10 @@
                                          (split-window-vertically)))))
                                (t
                                 (select-window code-win)
-                                (dotimes (i (- num 3))
-                                  (other-window 1)))))
+                                (other-window 1)
+                                ;; (dotimes (i (- num 3))
+                                ;;   (other-window 1))
+                                )))
                         ((or (codepilot-layout-custom-buffer? (buffer-name))
                              (string= (buffer-name) "*info*")))
                         (t (save-selected-window
