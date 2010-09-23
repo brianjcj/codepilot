@@ -488,6 +488,15 @@
 ;; (add-to-list 'exec-path "C:/Program Files/erl5.5.5/bin")
 ;; (require 'erlang-start)
 
+(defun load-erl ()
+  ""
+  (interactive)
+  (cond ((eq system-type 'gnu/linux)
+         (add-to-list 'load-path "/usr/lib/erlang/lib/tools-2.6.4/emacs")
+         ;; (setq erlang-root-dir "/usr/local/otp")
+         ;; (setq exec-path (cons "/usr/local/otp/bin" exec-path))
+         (require 'erlang-start))))
+
 
 ;; ;; ACL
 ;; ;; ------------------

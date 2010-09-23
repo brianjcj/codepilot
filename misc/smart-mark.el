@@ -58,6 +58,8 @@
 (modify-syntax-entry ?\\ "\\" smart-mark-temp-syntax-table)
 
 
+(defvar smart-mark-include-encloser nil)
+
 (defun smart-mark-1 (&optional adjust pos)
   (let ((c (char-after))
         range b e start end)
@@ -75,8 +77,11 @@
                 (and (< pos b) (< pos e)) ;; out of range
                 (and (> pos b) (> pos e)) ;; out of range
                 )
-      (when (and adjust (not (eq major-mode 'emacs-lisp-mode))
-                 (not (eq major-mode 'lisp-mode)))
+      (when (and adjust
+                 (not (eq major-mode 'emacs-lisp-mode))
+                 (not (eq major-mode 'lisp-mode))
+                 (not smart-mark-include-encloser)
+                 (not current-prefix-arg))
         (cond ((< b e)
                (setq b (1+ b)
                      e (1- e)))
@@ -127,8 +132,8 @@
   (ignore-errors
     (if (= level -1)
         (while t (backward-up-list 99999))
-      (backward-up-list level)))
-  (smart-mark-1 t (point)))
+      (backward-up-list level))
+    (smart-mark-1 t (point))))
 
 (defun smart-mark-find-real-quote (c)
   (let (not-q)
@@ -176,8 +181,10 @@
 
 (defvar smart-mark-help-text "()[]<>\"\'   as you know;
 m   mark current list;
+M   mark current list including enclosers;
 n   mark according to the char under cursor;
 t   mark tag content;
+T   mark tag content as well as tag;
 l   mark line;
 s   mark sexp;
 a   mark from current pos to beginning of the line;
@@ -190,6 +197,7 @@ F   find a char backward and mark orig pos to new pos;
 
 And you can type an optional number (0-9) before ()[]<>m.
 Try it to see the effect :)
+Type C-u before the command, the enclosers will be marked too.
 ")
 
 (defun smart-mark (&optional c-arg num-arg)
@@ -235,6 +243,10 @@ Try it to see the effect :)
       (cond ((= c ?t)
              (unless (smart-mark-tag)
                (goto-char pos)))
+            ((= c ?T)
+             (unless (let ((smart-mark-include-encloser t))
+                       (smart-mark-tag))
+               (goto-char pos)))
             ((= c ?l)
              (smart-mark-line))
             ((= c ?a)
@@ -249,6 +261,9 @@ Try it to see the effect :)
              (smart-mark-1 nil (point)))
             ((= c ?m)
              (smart-mark-mark-current-list num))
+            ((= c ?M)
+             (let ((smart-mark-include-encloser t))
+               (smart-mark-mark-current-list num)))
             ((= c ?f)
              (smart-mark-find-char-1 'search-forward))
             ((= c ?F)
@@ -305,17 +320,22 @@ Try it to see the effect :)
       (sgml-skip-tag-forward 1)
       (setq e (point))
       (goto-char s)
-      (when (looking-at "<\\([^\s\t>]+\\)[^>]*>")
-        (setq tag (match-string 1))
-        (goto-char (match-end 0))
-        (setq rs (point))
-        (goto-char e)
-        (when (re-search-backward "</\\([^\s\t>]+\\)[^>]*>" nil t)
-          (when (string= tag (match-string 1))
-            (setq re (match-beginning 0))
-            (when (>= e pos)
-              (push-mark rs nil t)
-              (goto-char re))))))))
+      (if (or smart-mark-include-encloser
+              current-prefix-arg)
+          (progn
+            (push-mark s nil t)
+            (goto-char e))
+        (when (looking-at "<\\([^\s\t>]+\\)[^>]*>")
+          (setq tag (match-string 1))
+          (goto-char (match-end 0))
+          (setq rs (point))
+          (goto-char e)
+          (when (re-search-backward "</\\([^\s\t>]+\\)[^>]*>" nil t)
+            (when (string= tag (match-string 1))
+              (setq re (match-beginning 0))
+              (when (>= e pos)
+                (push-mark rs nil t)
+                (goto-char re)))))))))
 
 
 (defun mysgml-goto-open-tag-backward-1 (arg)

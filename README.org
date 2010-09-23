@@ -1,10 +1,155 @@
-If you want to have a try, just:
 
-emacs -q &
-and then:
-(load "yourdirxxxxxxxxx/codepilot/myinit.el")
+* Introduction:
 
-----
+Codepilot package is my el scripts collection for reading/writing
+C/C++.  My configuration may conflict with yours. So if you just want
+to have a try, you can start Emacs with -q option and then load my
+scripts/configuration by:
 
-Detailed info will be Updated later :)
+  #+BEGIN_EXAMPLE
+    (load "yourdirxxxxxxxxx/codepilot/myinit.el")
+  #+END_EXAMPLE
+
+
+Codepilot use cedet included in official Emacs to generate imenu. It
+also supports to generate imenu using Exuberant Ctags too (since
+sematic is often confused by preprocess notions).
+
+I now use GNU Emacs 23.2.1. I am not sure whether these scripts will
+have problem under other Emacs versions.
+
+* My way in Emacs
+
+ - *codepilot-ro-mode* (Read Only) is enabled by default. 
+   
+   When this mode is enabled, buffers having C/C++/Java mode enabled
+   will become read-only and then you can access many useful commands
+   and functions by just one single key. e.g.,
+
+     - j : gtags-find-tag (or M-.)
+     - i : gtags-find-rtag
+     - o : gtags-find-symbol
+     - l : gtags-find-file
+     - f : next match
+     - b : previous match
+     - ] : *block traceback*
+     - [ : *which procedure*
+     - v : toggle folding (or F10)
+     - , : go back in history
+     - . : go forward in history
+     - w : switch between .h/.hpp and .cc/.cpp/.cc files in the same folder.
+     - r : remember
+     - R : remember region
+     - d : cscope, goto defintions
+     - s : cscope, find symbol
+     - ` : minimize/restore sidebar
+     - 1 : same as C-x 1
+     - and more.
+    
+   It is very convenient when you just want to reading with
+   editing. See the shadow of VI?
+  
+   codepilot-ro-mode can be toggled by "M-x cpro" and click a button in
+   toolbar.
+
+ - Right button of the mouse.
+   
+   I use right button of the mouse for clicking links and jumping. Not
+   double click! Try to use right button to click somewhere you may
+   discover some functions you don't know before.
+
+   I use mouse heavily. Lots of functions can be accessed by just
+   clicking the right button.
+
+ - *F8* or clicking the second button in the toolbar to toggle the sidebar.
+
+ - C-u (prefix arguement) for gtags find functions. *Userful!*
+
+   If you type C-u before any gtags find commands, it prompts you to
+   specify a dirctory and then the searching will be only performed in
+   the specified directory and its sub-directories. It is very useful
+   when browsing C++ codes since there will be so many methods have
+   the same name.
+
+   It actually trigger the '-l, --local' option of global program.
+
+ - *Filter*: try to type some thing in the first line of *IDList* and *CPImenu*
+
+ - M-j: bound to semantic-complete-jump. Sometimes it is quite useful.
+
+   Most of time, I use it to jump to member variable definitions of
+   C++ class. (since GNU Global doesn't index the member variable
+   definitions!)
+
+ - Some functions are provided to manipulate the Gtags result buffers.
+
+   e.g., flush/keep some files whose path is matching the supplied
+   regexp. Auto flush/keep. Useful to navigate large projects.
+
+ - type 'g' in *IDList* buffer to update it.
+
+ - type 'g' in *CPImenu* buffer to update it. 
+
+ - F3: occur (word)
+
+ - Discover more functions by yourself! Just have a look at the
+   available menu items!
+
+ - Frequently used commands are available in Toolbar too. When
+   codepilot-ro-mode is disabled, you can still accessed these
+   commands easily by just clicking the toolbar.
+
+
+* Other features:
+
+  - smart-highlight: double click a word and then all the same words
+    are highlighted in the same buffer.
+
+  - smart-mark
+
+  - auto-complete-clange
+
+  - some modifications/enhancements/hacking...
+
+* Notes:
+
+  - Layout:
+    
+    In order to implement the sidebar and specified window
+    layout/behaviors, I add some advices and hooks to modify some
+    default window behavior. It may not work very well with some
+    feature/scripts (which I don't use). 
+    
+    If you meet such situations, Just type the following command to
+    deactivate these advices/hooks
+
+    #+BEGIN_EXAMPLE
+    (codepilot-layout-deactivate)
+    #+END_EXAMPLE
+
+    To activate them again:
+
+    #+BEGIN_EXAMPLE
+    (codepilot-layout-activate)
+    #+END_EXAMPLE
+
+  - Cedet CPImenu or Ctags CPImenu
+
+    Cedet CPImenu is used by default. You can click the '[Ctags]' to
+    switch to Ctags CPImenu for the corresponding buffer.
+
+    To use Ctags CPImenu by default, add the following to your startup
+    file:
+
+    #+BEGIN_EXAMPLE
+    (myctags-imenu-active)
+    #+END_EXAMPLE
+
+* Screenshot
+
+  Refer to the codepilot-scrn folder. 
+  *A picture is worth a thousand words*. Have a look.
+
+
+ ----------
 
