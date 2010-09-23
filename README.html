@@ -1,0 +1,406 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+               "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+lang="en" xml:lang="en">
+<head>
+<title>README</title>
+<meta http-equiv="Content-Type" content="text/html;charset=iso-8859-1"/>
+<meta name="generator" content="Org-mode"/>
+<meta name="generated" content="2010-09-23 15:56:05 CST"/>
+<meta name="author" content="brianjcj"/>
+<meta name="description" content=""/>
+<meta name="keywords" content=""/>
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  html { font-family: Times, serif; font-size: 12pt; }
+  .title  { text-align: center; }
+  .todo   { color: red; }
+  .done   { color: green; }
+  .tag    { background-color: #add8e6; font-weight:normal }
+  .target { }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  p.verse { margin-left: 3% }
+  pre {
+	border: 1pt solid #AEBDCC;
+	background-color: #F3F5F7;
+	padding: 5pt;
+	font-family: courier, monospace;
+        font-size: 90%;
+        overflow:auto;
+  }
+  table { border-collapse: collapse; }
+  td, th { vertical-align: top; }
+  dt { font-weight: bold; }
+  div.figure { padding: 0.5em; }
+  div.figure p { text-align: center; }
+  .linenr { font-size:smaller }
+  .code-highlighted {background-color:#ffff00;}
+  .org-info-js_info-navigation { border-style:none; }
+  #org-info-js_console-label { font-size:10px; font-weight:bold;
+                               white-space:nowrap; }
+  .org-info-js_search-highlight {background-color:#ffff00; color:#000000;
+                                 font-weight:bold; }
+  /*]]>*/-->
+</style>
+<script type="text/javascript">
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="content">
+
+<h1 class="title">README</h1>
+
+
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#sec-1">1 Introduction: </a></li>
+<li><a href="#sec-2">2 My way in Emacs </a></li>
+<li><a href="#sec-3">3 Other features: </a></li>
+<li><a href="#sec-4">4 Notes: </a></li>
+<li><a href="#sec-5">5 Screenshot </a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-1" class="outline-2">
+<h2 id="sec-1"><span class="section-number-2">1</span> Introduction: </h2>
+<div class="outline-text-2" id="text-1">
+
+
+<p>
+Codepilot package is my el scripts collection for reading/writing
+C/C++.  My configuration may conflict with yours. So if you just want
+to have a try, you can start Emacs with -q option and then load my
+scripts/configuration by:
+</p>
+
+
+
+<pre class="example">(load "yourdirxxxxxxxxx/codepilot/myinit.el")
+</pre>
+
+
+
+
+
+<p>
+Codepilot use cedet included in official Emacs to generate imenu. It
+also supports to generate imenu using Exuberant Ctags too (since
+sematic is often confused by preprocess notions).
+</p>
+<p>
+I now use GNU Emacs 23.2.1. I am not sure whether these scripts will
+have problem under other Emacs versions.
+</p>
+</div>
+
+</div>
+
+<div id="outline-container-2" class="outline-2">
+<h2 id="sec-2"><span class="section-number-2">2</span> My way in Emacs </h2>
+<div class="outline-text-2" id="text-2">
+
+
+<ul>
+<li>
+<b>codepilot-ro-mode</b> (Read Only) is enabled by default. 
+
+<p>
+When this mode is enabled, buffers having C/C++/Java mode enabled
+will become read-only and then you can access many useful commands
+and functions by just one single key. e.g.,
+</p>
+<ul>
+<li>
+j : gtags-find-tag (or M-.)
+</li>
+<li>
+i : gtags-find-rtag
+</li>
+<li>
+o : gtags-find-symbol
+</li>
+<li>
+l : gtags-find-file
+</li>
+<li>
+f : next match
+</li>
+<li>
+b : previous match
+</li>
+<li>
+] : <b>block traceback</b>
+</li>
+<li>
+[ : <b>which procedure</b>
+</li>
+<li>
+v : toggle folding (or F10)
+</li>
+<li>
+, : go back in history
+</li>
+<li>
+. : go forward in history
+</li>
+<li>
+w : switch between .h/.hpp and .cc/.cpp/.cc files in the same folder.
+</li>
+<li>
+r : remember
+</li>
+<li>
+R : remember region
+</li>
+<li>
+d : cscope, goto defintions
+</li>
+<li>
+s : cscope, find symbol
+</li>
+<li>
+` : minimize/restore sidebar
+</li>
+<li>
+1 : same as C-x 1
+</li>
+<li>
+and more.
+
+</li>
+</ul>
+
+<p>It is very convenient when you just want to reading with
+editing. See the shadow of VI?
+</p>
+<p>
+codepilot-ro-mode can be toggled by "M-x cpro" and click a button in
+toolbar.
+</p>
+</li>
+<li>
+Right button of the mouse.
+
+<p>
+I use right button of the mouse for clicking links and jumping. Not
+double click! Try to use right button to click somewhere you may
+discover some functions you don't know before.
+</p>
+<p>
+I use mouse heavily. Lots of functions can be accessed by just
+clicking the right button.
+</p>
+</li>
+<li>
+<b>F8</b> or clicking the second button in the toolbar to toggle the sidebar.
+
+</li>
+<li>
+C-u (prefix arguement) for gtags find functions. <b>Userful!</b>
+
+<p>
+If you type C-u before any gtags find commands, it prompts you to
+specify a dirctory and then the searching will be only performed in
+the specified directory and its sub-directories. It is very useful
+when browsing C++ codes since there will be so many methods have
+the same name.
+</p>
+<p>
+It actually trigger the '-l, &ndash;local' option of global program.
+</p>
+</li>
+<li>
+<b>Filter</b>: try to type some thing in the first line of <b>IDList</b> and <b>CPImenu</b>
+
+</li>
+<li>
+M-j: bound to semantic-complete-jump. Sometimes it is quite useful.
+
+<p>
+Most of time, I use it to jump to member variable definitions of
+C++ class. (since GNU Global doesn't index the member variable
+definitions!)
+</p>
+</li>
+<li>
+Some functions are provided to manipulate the Gtags result buffers.
+
+<p>
+e.g., flush/keep some files whose path is matching the supplied
+regexp. Auto flush/keep. Useful to navigate large projects.
+</p>
+</li>
+<li>
+type 'g' in <b>IDList</b> buffer to update it.
+
+</li>
+<li>
+type 'g' in <b>CPImenu</b> buffer to update it. 
+
+</li>
+<li>
+F3: occur (word)
+
+</li>
+<li>
+Discover more functions by yourself! Just have a look at the
+available menu items!
+
+</li>
+<li>
+Frequently used commands are available in Toolbar too. When
+codepilot-ro-mode is disabled, you can still accessed these
+commands easily by just clicking the toolbar.
+
+
+</li>
+</ul>
+</div>
+
+</div>
+
+<div id="outline-container-3" class="outline-2">
+<h2 id="sec-3"><span class="section-number-2">3</span> Other features: </h2>
+<div class="outline-text-2" id="text-3">
+
+
+<ul>
+<li>
+smart-highlight: double click a word and then all the same words
+are highlighted in the same buffer.
+
+</li>
+<li>
+smart-mark
+
+</li>
+<li>
+auto-complete-clange
+
+</li>
+<li>
+some modifications/enhancements/hacking&hellip;
+
+</li>
+</ul>
+</div>
+
+</div>
+
+<div id="outline-container-4" class="outline-2">
+<h2 id="sec-4"><span class="section-number-2">4</span> Notes: </h2>
+<div class="outline-text-2" id="text-4">
+
+
+<ul>
+<li>
+Layout:
+
+<p>
+In order to implement the sidebar and specified window
+layout/behaviors, I add some advices and hooks to modify some
+default window behavior. It may not work very well with some
+feature/scripts (which I don't use). 
+</p>
+<p>
+If you meet such situations, Just type the following command to
+deactivate these advices/hooks
+</p>
+
+
+
+<pre class="example">(codepilot-layout-deactivate)
+</pre>
+
+
+
+
+<p>
+To activate them again:
+</p>
+
+
+
+<pre class="example">(codepilot-layout-activate)
+</pre>
+
+
+
+
+</li>
+<li>
+Cedet CPImenu or Ctags CPImenu
+
+<p>
+Cedet CPImenu is used by default. You can click the '[Ctags]' to
+switch to Ctags CPImenu for the corresponding buffer.
+</p>
+<p>
+To use Ctags CPImenu by default, add the following to your startup
+file:
+</p>
+
+
+
+<pre class="example">(myctags-imenu-active)
+</pre>
+
+
+
+
+</li>
+</ul>
+</div>
+
+</div>
+
+<div id="outline-container-5" class="outline-2">
+<h2 id="sec-5"><span class="section-number-2">5</span> Screenshot </h2>
+<div class="outline-text-2" id="text-5">
+
+
+<p>
+Refer to the codepilot-scrn folder. 
+<b>A picture is worth a thousand words</b>. Have a look.
+</p>
+
+
+<hr/>
+
+</div>
+</div>
+<div id="postamble">
+<p class="author"> Author: brianjcj
+<a href="mailto:brianjcj@brianjcj">&lt;brianjcj@brianjcj&gt;</a>
+</p>
+<p class="date"> Date: 2010-09-23 15:56:05 CST</p>
+<p class="creator">HTML generated by org-mode 6.33x in emacs 23</p>
+</div>
+</div>
+</body>
+</html>
