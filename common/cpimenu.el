@@ -413,7 +413,6 @@
       (goto-char (point-min))
       (cpfilter-erase))))
 
-(defvar cplist-side-window-size 38)
 
 (defvar cpimenu-win-height 20)
 
@@ -727,5 +726,11 @@
   (ad-deactivate 'scroll-bar-toolkit-scroll)
   (ad-deactivate 'mwheel-scroll)
   (ad-deactivate 'semantic-default-which-function))
+
+;; deal with desktop
+(require 'desktop)
+(pushnew 'cpimenu-show-with-cplist desktop-globals-to-save)
+(pushnew 'cpimenu-win-height desktop-globals-to-save)
+
 
 (provide 'cpimenu)

@@ -3,8 +3,8 @@
 ;; Copyright (C) 2010  Brian Jiang
 
 ;; Author: Brian Jiang <brianjcj@gmail.com>
-;; Keywords: completion, convenience
-;; Version: 0.1d
+;; Keywords: convenience
+;; Version: 0.1f
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -78,8 +78,8 @@
                 (and (> pos b) (> pos e)) ;; out of range
                 )
       (when (and adjust
-                 (not (eq major-mode 'emacs-lisp-mode))
-                 (not (eq major-mode 'lisp-mode))
+                 ;; (not (eq major-mode 'emacs-lisp-mode))
+                 ;; (not (eq major-mode 'lisp-mode))
                  (not smart-mark-include-encloser)
                  (not current-prefix-arg))
         (cond ((< b e)
@@ -132,8 +132,8 @@
   (ignore-errors
     (if (= level -1)
         (while t (backward-up-list 99999))
-      (backward-up-list level))
-    (smart-mark-1 t (point))))
+      (backward-up-list level)))
+  (smart-mark-1 t (point)))
 
 (defun smart-mark-find-real-quote (c)
   (let (not-q)
@@ -143,16 +143,27 @@
       (backward-char)
       t)))
 
+(defvar smart-mark-just-find nil)
+
 (defun smart-mark-find-char-1 (s-fn)
-  (let (c)
+  (let (c
+        (case-fold-search nil))
     (catch 'loo
-      (while t
-        (setq c (read-char "find char (type RET to finish) : "))
-        (when (= c ?\r)
-          (throw 'loo t))
-        (unless mark-active
-             (push-mark (point) nil t))
-        (funcall s-fn (string c) nil t)))))
+      (condition-case nil
+        (while t
+          (setq c (read-char "find char (type RET to finish) : "))
+          (when (= c ?\r)
+            (throw 'loo t))
+          (unless mark-active
+            (unless smart-mark-just-find
+              (push-mark (point) nil t)))
+          (funcall s-fn (string c) nil t))
+        (error
+         (let ((key-1 (this-command-keys))
+               cmd)
+           (and key-1
+                (setq cmd (key-binding (substring key-1 (1- (length key-1)))))
+                (call-interactively cmd))))))))
 
 (defun smart-mark-whole-sexp ()
   "Mark whole sexp."
@@ -193,6 +204,8 @@ RET mark word;
 w   mark word;
 f   find a char forward and mark orig pos to new pos;
 F   find a char backward and mark orig pos to new pos;
+r   find a char forward;
+R   find a char backward;
 ?   help
 
 And you can type an optional number (0-9) before ()[]<>m.
@@ -268,6 +281,12 @@ Type C-u before the command, the enclosers will be marked too.
              (smart-mark-find-char-1 'search-forward))
             ((= c ?F)
              (smart-mark-find-char-1 'search-backward))
+            ((= c ?r)
+             (let ((smart-mark-just-find t))
+               (smart-mark-find-char-1 'search-forward)))
+            ((= c ?R)
+             (let ((smart-mark-just-find t))
+               (smart-mark-find-char-1 'search-backward)))
             ((= c ?s)
              (smart-mark-whole-sexp))
             (t

@@ -401,8 +401,6 @@ overlay on the hide-region-overlays \"ring\""
 ;; deal with desktop
 (require 'desktop)
 (pushnew 'cplist-side-window-size desktop-globals-to-save)
-(pushnew 'cpimenu-show-with-cplist desktop-globals-to-save)
-(pushnew 'cpimenu-win-height desktop-globals-to-save)
 
 (provide 'cp-base)
 
