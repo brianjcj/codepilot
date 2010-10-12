@@ -137,6 +137,13 @@
 
 (defvar cpimenu-font-lock-keywords
   (list
+   
+   (list "@ \\(.+\\)\\(|.+|\\)"
+         '(1 'cpimenu-head-face)
+         '(2 'cpimenu-info-face))
+   
+   (list "@ \\(.+\\)$"
+         '(1 'cpimenu-head-face))
 
    (list "^ +\\(operator\\) \\([^ ]+\\) \\((.*$\\)"
          '(1 'cpimenu-note-face)
@@ -159,13 +166,6 @@
    
    (list "^[ ]*\\([^)\n]+\\) ?("
          '(1 'cpimenu-function-face))
-
-   (list "@ \\(.+\\)\\(|.+|\\)"
-         '(1 'cpimenu-head-face)
-         '(2 'cpimenu-info-face))
-   
-   (list "@ \\(.+\\)$"
-         '(1 'cpimenu-head-face))
 
    (list "^ +\\(.+\\)\\(|.+|\\)"
          '(1 'cpimenu-keyword-face)

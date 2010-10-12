@@ -4,7 +4,7 @@
 
 ;; Author: Brian Jiang <brianjcj@gmail.com>
 ;; Keywords: convenience
-;; Version: 0.1f
+;; Version: 0.1g
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -146,13 +146,24 @@
 (defvar smart-mark-just-find nil)
 
 (defun smart-mark-find-char-1 (s-fn)
-  (let (c
-        (case-fold-search nil))
+  (let (c pos
+        (case-fold-search nil)
+        (org-pos (point))
+        (prompt "find char (type RET to finish) : "))
+    (when smart-mark-just-find
+      (setq prompt "find char (type RET to finish, type C-x to mark) : "))
     (catch 'loo
       (condition-case nil
         (while t
-          (setq c (read-char "find char (type RET to finish) : "))
+          (setq c (read-char prompt))
           (when (= c ?\r)
+            (throw 'loo t))
+          (when (and smart-mark-just-find
+                     (= c 24) ;; C-x
+                     )
+            (setq pos (point))
+            (push-mark org-pos nil t)
+            (goto-char pos)
             (throw 'loo t))
           (unless mark-active
             (unless smart-mark-just-find
