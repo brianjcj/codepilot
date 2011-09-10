@@ -30,6 +30,7 @@ have problem under other Emacs versions.
      - i : gtags-find-rtag
      - o : gtags-find-symbol
      - l : gtags-find-file
+     - p : anything-gtags-path (or F9 a g), find file via Global in anything style. *cool!*
      - f : next match
      - b : previous match
      - ] : *block traceback*
@@ -102,12 +103,12 @@ have problem under other Emacs versions.
 
 * Other features:
 
-  - smart-highlight: double click a word and then all the same words
+  - smart-hl: double click a word and then all the same words
     are highlighted in the same buffer.
 
   - smart-mark
 
-  - auto-complete-clange
+  - auto-complete-clang
 
   - some modifications/enhancements/hacking...
 
