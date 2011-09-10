@@ -653,6 +653,7 @@ Turning on Gtags-Select mode calls the value of the variable
     ["Parse file" gtags-parse-file t]
     "-"
     ["Find file" gtags-find-file t]
+    ["Find file (Anything)" anything-gtags-path t]
     "-"
     ["Find with grep" gtags-find-with-grep t]
     ["Find with idutils" gtags-find-with-idutils t]

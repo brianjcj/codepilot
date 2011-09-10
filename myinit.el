@@ -42,7 +42,7 @@
 ;; undo and redo
 ;; ====================
 (require 'redo)
-(global-set-key [(f5)] 'undo)
+;; (global-set-key [(f5)] 'undo)
 (global-set-key [(shift f5)] 'redo)
 
 
@@ -271,6 +271,12 @@
 
 
 (require 'smart-mark)
+
+
+(add-to-list 'load-path (concat mydir "import/anything"))
+(require 'anything-config)
+(require 'anything-gtags)
+
 
 ;; (add-hook 'after-init-hook (lambda ()
 ;;                              (w32-maximize-frame)

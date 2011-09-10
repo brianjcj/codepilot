@@ -556,8 +556,8 @@
 
 ;; Anything!!!!
 ;; ==================
-(require 'anything)
-(require 'anything-config)
+;; (require 'anything)
+;; (require 'anything-config)
 
 (setq w32-pass-lwindow-to-system nil)
 (setq w32-lwindow-modifier 'hyper)
