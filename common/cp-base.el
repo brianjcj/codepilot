@@ -82,6 +82,12 @@ not really placed in the text, it is just shown in the overlay"
         (return)))
     ret))
 
+(defun codepilot-trim (s)
+  "Remove whitespace at beginning and end of string."
+  (if (string-match "\\`[ \t\n\r]+" s) (setq s (replace-match "" t t s)))
+  (if (string-match "[ \t\n\r]+\\'" s) (setq s (replace-match "" t t s)))
+  s)
+
 (defsubst codepilot-goto-line (line)
   (goto-char (point-min)) (forward-line (1- line)))
 

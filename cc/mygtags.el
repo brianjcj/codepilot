@@ -49,6 +49,7 @@
      ((equal flag "P")
       (setq prefix "F) ")
       (setq hl-type nil)
+      (setq tagname (codepilot-trim tagname))
       (when (string-match "^\\(.+?\\):.*?\\([0-9]+\\)$" tagname)
         (setq linenum (string-to-number (match-string-no-properties 2 tagname)))
         (setq tagname (match-string-no-properties 1 tagname))))
