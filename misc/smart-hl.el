@@ -54,11 +54,29 @@
                (while (re-search-forward smart-hl-highlight-txt end t)
                  (codepilot-mark-region (match-beginning 0) (match-end 0)))))))))
 
-(defadvice mouse-move-drag-overlay (after mouse-move-drag-overlay (ol start end mode))
-  ;; don't delete the dedicated windows
+;; (defadvice mouse-move-drag-overlay (after smart-hl (ol start end mode))
+;;   ;; don't delete the dedicated windows
 
+;;   (cond ((= mode 1)
+;;          (let ((txt (buffer-substring-no-properties (overlay-start ol) (overlay-end ol))))
+;;            (cond ((or (string= txt "")
+;;                       (string-match "^[\t\n\s]*$" txt)
+;;                       (string-match "\n" txt))
+;;                   (setq smart-hl-highlight-txt "")
+;;                   (smart-hl-highlight-text-in-window))
+;;                  (t
+;;                   (setq smart-hl-highlight-txt (concat "\\_<" (regexp-quote txt) "\\_>"))
+;;                   (smart-hl-highlight-text-in-window)))))
+;;         ((= mode 2)
+;;          (setq smart-hl-highlight-txt "")
+;;          (smart-hl-highlight-text-in-window))))
+
+;; (ad-activate 'mouse-move-drag-overlay)
+
+(defadvice mouse-start-end (after smart-hl (start end mode))
+  ; ad-return-value
   (cond ((= mode 1)
-         (let ((txt (buffer-substring-no-properties (overlay-start ol) (overlay-end ol))))
+         (let ((txt (buffer-substring-no-properties (nth 0 ad-return-value) (nth 1 ad-return-value))))
            (cond ((or (string= txt "")
                       (string-match "^[\t\n\s]*$" txt)
                       (string-match "\n" txt))
@@ -71,7 +89,7 @@
          (setq smart-hl-highlight-txt "")
          (smart-hl-highlight-text-in-window))))
 
-(ad-activate 'mouse-move-drag-overlay)
+(ad-activate 'mouse-start-end)
 
 
 (defun smart-hl-highlight-text-in-window-scroll (win pos)

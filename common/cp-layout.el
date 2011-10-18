@@ -146,11 +146,6 @@
                                  (select-window win))))))))))))))
 
 
-
-(defadvice display-buffer (before codepilot-windown-layout
-                                  (buffer &optional not-this-window frame))
-  (codepilot-display-and-temp-buffer-before-advice buffer not-this-window frame))
-
 ;; (defun codepilot-before-temp-buffer-setup ()
 ;;   (display-and-temp-buffer-before-advice))
 
@@ -171,15 +166,41 @@
 
 (setq temp-buffer-show-function 'codepilot-temp-buffer-show-function)
 
-(defadvice pop-to-buffer (before codepilot-windown-layout
-                                 (buffer &optional other-window norecord))
-  (save-excursion
-    (multiple-value-bind (ret sidebar code-win bottom-win)
-        (codepilot-window-layout-wise)
-      (case ret
-        ((:window-layout-1&1)
-         (cond ((window-dedicated-p (selected-window))
-                (select-window code-win))))))))
+(cond ((>= emacs-major-version 24)
+
+       (defadvice pop-to-buffer (before codepilot-windown-layout
+                                        (buffer &optional action norecord))
+         (save-excursion
+           (multiple-value-bind (ret sidebar code-win bottom-win)
+               (codepilot-window-layout-wise)
+             (case ret
+               ((:window-layout-1&1)
+                (cond ((window-dedicated-p (selected-window))
+                       (select-window code-win))))))))
+
+       (defadvice display-buffer (before codepilot-windown-layout
+                                         (&optional buffer-or-name action frame))
+         (unless (and (listp action) (eq (car action) 'display-buffer-same-window))
+           (codepilot-display-and-temp-buffer-before-advice buffer-or-name nil frame)))
+       
+       )
+      (t
+       (defadvice pop-to-buffer (before codepilot-windown-layout
+                                        (buffer &optional other-window norecord))
+         (save-excursion
+           (multiple-value-bind (ret sidebar code-win bottom-win)
+               (codepilot-window-layout-wise)
+             (case ret
+               ((:window-layout-1&1)
+                (cond ((window-dedicated-p (selected-window))
+                       (select-window code-win))))))))
+
+       (defadvice display-buffer (before codepilot-windown-layout
+                                         (buffer &optional not-this-window frame))
+         (codepilot-display-and-temp-buffer-before-advice buffer not-this-window frame))
+       
+       ))
+
 
 (defadvice delete-window (around codepilot-windown-layout
                                 (&optional window))

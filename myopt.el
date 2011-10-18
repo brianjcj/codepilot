@@ -45,7 +45,7 @@
 
 
 ;; htmlize
-(require 'htmlize)
+;; (require 'htmlize)
 
 
 ;; ;; =====CEDET============
@@ -733,7 +733,7 @@
 ;; It's better put this near the end of the file so that the
 ;; desktop info will not be destroyed when the init file has problem.
 ;;
-(load "desktop")
-(desktop-save-mode)
+;; (load "desktop")
+;; (desktop-save-mode)
 
 

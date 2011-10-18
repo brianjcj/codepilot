@@ -444,14 +444,7 @@ showed in the codepilot sidebar."
 (add-hook 'kill-buffer-hook 'codepilot-kill-buffer-action)
 
 (define-minor-mode codepilot-ro-mode
-       "Toggle codepilot mode.
-     With no argument, this command toggles the mode.
-     Non-null prefix argument turns on the mode.
-     Null prefix argument turns off the mode.
-
-     When Hungry mode is enabled, the control delete key
-     gobbles all preceding whitespace except the last.
-     See the command \\[hungry-electric-delete]."
+       ""
       ;; The initial value.
       :init-value nil
       ;; The indicator for the mode line.
@@ -512,13 +505,13 @@ showed in the codepilot sidebar."
           (codepilot-ro-mode flag)
           )))
     (cond (codepilot-ro-enabled-globally
-           (add-hook 'c-mode-hook 'codepilot-ro-mode)
-           (add-hook 'c++-mode-hook 'codepilot-ro-mode)
-           (add-hook 'java-mode-hook 'codepilot-ro-mode))
+           (add-hook 'c-mode-hook (lambda()(interactive)(codepilot-ro-mode 1)))
+           (add-hook 'c++-mode-hook (lambda()(interactive)(codepilot-ro-mode 1)))
+           (add-hook 'java-mode-hook (lambda()(interactive)(codepilot-ro-mode 1))))
           (t
-           (remove-hook 'c-mode-hook 'codepilot-ro-mode)
-           (remove-hook 'c++-mode-hook 'codepilot-ro-mode)
-           (remove-hook 'java-mode-hook 'codepilot-ro-mode)))))
+           (remove-hook 'c-mode-hook (lambda()(interactive)(codepilot-ro-mode 1)))
+           (remove-hook 'c++-mode-hook (lambda()(interactive)(codepilot-ro-mode 1)))
+           (remove-hook 'java-mode-hook (lambda()(interactive)(codepilot-ro-mode 1)))))))
 
 (defalias 'cpro 'codepilot-ro-toggle-globally)
 

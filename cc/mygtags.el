@@ -472,7 +472,7 @@ Turning on Gtags-Select mode calls the value of the variable
   (save-excursion
     (save-match-data
       (let ((case-fold-search t)
-            b loo o)
+            b e loo o)
         (remove-overlays (point-min) (point-max) 'tag 'mygtags)
     
         (setq o (make-overlay (point-min) (point-max)))
@@ -666,7 +666,7 @@ Turning on Gtags-Select mode calls the value of the variable
     ))
 
 
-(add-hook 'gtags-select-mode-hook 'codepilot-ro-mode)
+(add-hook 'gtags-select-mode-hook (lambda()(interactive)(codepilot-ro-mode 1)))
 
 ;; (require 'desktop)
 ;; (pushnew 'find-gtag-history desktop-globals-to-save)
