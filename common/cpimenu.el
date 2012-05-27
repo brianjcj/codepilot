@@ -68,7 +68,7 @@
       (setq prefix-str " "))
 
     (dolist (ii ll)
-      (when (consp ii)
+      (when (and (consp ii) (car ii))
         (cond ((listp (cdr ii))
                (insert prefix-str)
                (insert-image codepilot-image-bucket "@") ;; brian test

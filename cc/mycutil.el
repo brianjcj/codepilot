@@ -523,7 +523,7 @@
 
 
 (defvar c-cpp-header-file-subfixes '("h" "hpp"))
-(defvar c-cpp-src-file-subfixes '("c" "cpp" "cc"))
+(defvar c-cpp-src-file-subfixes '("c" "cpp" "cc" "m" "mm"))
 
 ;; similar function has already available as command "ff-find-other-file" : (
 (defun jump-to-h-c-file ()

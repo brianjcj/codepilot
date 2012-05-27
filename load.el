@@ -109,6 +109,8 @@
                             (hs-minor-mode 1)))
 
 
+(pushnew 'objc-mode which-func-modes)
+
 (require 'cplist-cc)
 (add-hook 'find-file-hook 'cplist-update-buffer-list)
 (add-hook 'dired-mode-hook 'cplist-update-dired-list)

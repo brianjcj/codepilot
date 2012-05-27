@@ -343,6 +343,9 @@
         ;;               buf)
         ))))
 
+
+(setq which-func-imenu-joiner-function (lambda (x) (mapconcat 'identity x " => ")))
+
 (defun cc-which-func-2 ()
   (if (and (featurep 'semantic)
            ;; semantic--buffer-cache
@@ -361,42 +364,78 @@
           (make-local-variable 'which-function-imenu-failed)
           (setq which-function-imenu-failed t)))
       (when (and (boundp 'imenu--index-alist) imenu--index-alist)
-        (let ((alist imenu--index-alist)
-              idx pos kind tag-elem idx2 tag-elem2 (loo t)
-              name-myi pos-myi name pos signature parents)
-          (when (and alist myctags-tag-vect)
-            (setq idx (myctags-find-minoffset myctags-tag-vect (point) #'car))
-            (unless (null idx)
-              (setq tag-elem (aref myctags-tag-vect idx))
+        (cond (myctags-tag-vect
+               (let ((alist imenu--index-alist)
+                     idx pos kind tag-elem idx2 tag-elem2 (loo t)
+                     name-myi pos-myi name pos signature parents)
 
-              (setq name (third tag-elem))
-              (setq pos (first tag-elem))
+                 (when (and alist myctags-tag-vect)
+                   (setq idx (myctags-find-minoffset myctags-tag-vect (point) #'car))
+                   (unless (null idx)
+                     (setq tag-elem (aref myctags-tag-vect idx))
 
-              (setq kind (fourth tag-elem))
-              (cond ((or (eq kind ?d) (eq kind ?v)) ;; marco or variable! skip it.
-                     (setq idx2 (1- idx))
-                     (while (and (>= idx2 0) loo)
-                       (setq tag-elem2 (aref myctags-tag-vect idx2))
-                       (unless (or (eq (fourth tag-elem2) ?d)
-                                   (eq (fourth tag-elem2) ?v))
-                         (setq loo nil)
-                         (setq name-myi (third tag-elem2))
-                         (setq pos-myi (first tag-elem2))
-                         (setq parents (fifth tag-elem2))
-                         (setq signature (sixth tag-elem2)))
-                       (setq idx2 (1- idx2))))
-                    (t
-                     (setq name-myi name)
-                     (setq pos-myi pos)
-                     (setq parents (fifth tag-elem))
-                     (setq signature (sixth tag-elem))))
+                     (setq name (third tag-elem))
+                     (setq pos (first tag-elem))
 
-              (when parents
-                (setq name-myi (concat parents "." name-myi)))
-              ;; (when signature
-              ;;   (setq name-myi (concat name-myi " " signature)))
+                     (setq kind (fourth tag-elem))
+                     (cond ((or (eq kind ?d) (eq kind ?v)) ;; marco or variable! skip it.
+                            (setq idx2 (1- idx))
+                            (while (and (>= idx2 0) loo)
+                              (setq tag-elem2 (aref myctags-tag-vect idx2))
+                              (unless (or (eq (fourth tag-elem2) ?d)
+                                          (eq (fourth tag-elem2) ?v))
+                                (setq loo nil)
+                                (setq name-myi (third tag-elem2))
+                                (setq pos-myi (first tag-elem2))
+                                (setq parents (fifth tag-elem2))
+                                (setq signature (sixth tag-elem2)))
+                              (setq idx2 (1- idx2))))
+                           (t
+                            (setq name-myi name)
+                            (setq pos-myi pos)
+                            (setq parents (fifth tag-elem))
+                            (setq signature (sixth tag-elem))))
 
-              (list name-myi pos-myi name pos))))))))
+                     (when parents
+                       (setq name-myi (concat parents "." name-myi)))
+                     ;; (when signature
+                     ;;   (setq name-myi (concat name-myi " " signature)))
+
+                     (list name-myi pos-myi name pos)))))
+              (t
+               (let ((alist imenu--index-alist)
+                     (minoffset (point-max))
+                     offset pair mark imstack namestack name pos)
+                 ;; Elements of alist are either ("name" . marker), or
+                 ;; ("submenu" ("name" . marker) ... ). The list can be
+                 ;; arbitrarily nested.
+                 (while (or alist imstack)
+                   (if alist
+                       (progn
+                         (setq pair (car-safe alist)
+                               alist (cdr-safe alist))
+
+                         (cond ((atom pair))     ; skip anything not a cons
+
+                               ((imenu--subalist-p pair)
+                                (setq imstack   (cons alist imstack)
+                                      namestack (cons (car pair) namestack)
+                                      alist     (cdr pair)))
+
+                               ((number-or-marker-p (setq mark (cdr pair)))
+                                (if (>= (setq offset (- (point) mark)) 0)
+                                    (if (< offset minoffset) ; find the closest item
+                                        (setq minoffset offset
+                                              pos mark
+                                              name (funcall
+                                                    which-func-imenu-joiner-function
+                                                    (reverse (cons (car pair)
+                                                                   namestack)))))))))
+                     (setq alist     (car imstack)
+                           namestack (cdr namestack)
+                           imstack   (cdr imstack))))
+
+                 (list name pos name pos))))))))
 
 (defun cc-which-func ()
   

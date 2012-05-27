@@ -31,7 +31,7 @@
   :group 'programming)
 
 (defcustom codepilot-cc-major-modes
-  '(c-mode c++-mode java-mode)
+  '(c-mode c++-mode java-mode objc-mode)
   "List of major modes. The buffer in these major modes will be
 showed in the codepilot sidebar."
   :group 'codepilot-cc
@@ -367,9 +367,9 @@ showed in the codepilot sidebar."
   (make-local-variable 'codepilot-search-and-hl-text-func)
   (setq codepilot-search-and-hl-text-func 'cc-search-and-hl-text))
 
-(add-hook 'c-mode-hook 'cc-set-search-and-hl-func)
-(add-hook 'c++-mode-hook 'cc-set-search-and-hl-func)
-(add-hook 'java-mode-hook 'cc-set-search-and-hl-func)
+(dolist (mode codepilot-cc-major-modes) 'cc-set-search-and-hl-func
+        (add-hook (intern-soft (concat (prin1-to-string mode) "-hook")) 
+                  'cc-set-search-and-hl-func))
 
 (defun codepilot-highlight-2 (buf)
   ;; (message (format "When In hl-2: %s, Current Point: %d" (current-time-string) (point)))
@@ -470,14 +470,8 @@ showed in the codepilot sidebar."
     ["Blocktrace" mycutil-cp-pb-where-we-are t]
     "-"
     ["Toggle Folding" hs-toggle-hiding t]
-    ["Fold C switch" fold-c-switch (or (eq major-mode 'c-mode)
-                                    (eq major-mode 'c++-mode)
-                                    (eq major-mode 'java-mode)
-                                    )]
-    ["Fold C switch branch" fold-c-switch-branch (or (eq major-mode 'c-mode)
-                                                  (eq major-mode 'c++-mode)
-                                                  (eq major-mode 'java-mode)
-                                                  )]
+    ["Fold C switch" fold-c-switch t]
+    ["Fold C switch branch" fold-c-switch-branch t]
     "-"
     ["<< Go back" codepilot-previous-buffer t]
     ["Go next >>" codepilot-forward-buffer t]
@@ -505,13 +499,13 @@ showed in the codepilot sidebar."
           (codepilot-ro-mode flag)
           )))
     (cond (codepilot-ro-enabled-globally
-           (add-hook 'c-mode-hook (lambda()(interactive)(codepilot-ro-mode 1)))
-           (add-hook 'c++-mode-hook (lambda()(interactive)(codepilot-ro-mode 1)))
-           (add-hook 'java-mode-hook (lambda()(interactive)(codepilot-ro-mode 1))))
+           (dolist (mode codepilot-cc-major-modes)
+             (add-hook (intern-soft (concat (prin1-to-string mode) "-hook")) 
+                       (lambda()(interactive)(codepilot-ro-mode 1)))))
           (t
-           (remove-hook 'c-mode-hook (lambda()(interactive)(codepilot-ro-mode 1)))
-           (remove-hook 'c++-mode-hook (lambda()(interactive)(codepilot-ro-mode 1)))
-           (remove-hook 'java-mode-hook (lambda()(interactive)(codepilot-ro-mode 1)))))))
+           (dolist (mode codepilot-cc-major-modes)
+             (remove-hook (intern-soft (concat (prin1-to-string mode) "-hook")) 
+                          (lambda()(interactive)(codepilot-ro-mode 1))))))))
 
 (defalias 'cpro 'codepilot-ro-toggle-globally)
 
