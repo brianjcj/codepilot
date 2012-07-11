@@ -1,5 +1,5 @@
 /* XPM */
-static char * sb_dir_xpm[] = {
+static char * dir_xpm[] = {
 "20 15 5 1",
 " 	c None",
 ".	c #828282",

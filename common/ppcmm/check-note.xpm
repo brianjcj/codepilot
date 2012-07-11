@@ -1,5 +1,5 @@
 /* XPM */
-static char * stock_properties_xpm[] = {
+static char * check_note_xpm[] = {
 "24 24 68 1",
 " 	c None",
 ".	c #000000",

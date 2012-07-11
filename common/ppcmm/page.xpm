@@ -1,5 +1,5 @@
 /* XPM */
-static char * sb_pg_xpm[] = {
+static char * page_xpm[] = {
 "20 15 5 1",
 " 	c None",
 ".	c #828282",

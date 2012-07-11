@@ -1,5 +1,5 @@
 /* XPM */
-static char * repack_xpm[] = {
+static char * open_section_xpm[] = {
 "24 24 83 1",
 " 	c None",
 ".	c #8F5902",
