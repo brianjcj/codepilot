@@ -108,8 +108,9 @@
                             (local-set-key "\C-co" 'mygtags-insert-gsym)
                             (hs-minor-mode 1)))
 
-
-(pushnew 'objc-mode which-func-modes)
+(require 'which-func)
+(when (listp which-func-modes)
+  (pushnew 'objc-mode which-func-modes))
 
 (require 'cplist-cc)
 (add-hook 'find-file-hook 'cplist-update-buffer-list)
