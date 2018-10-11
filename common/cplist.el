@@ -228,6 +228,7 @@
       (setq buffer-read-only t)
       (cplist-mode)
       (run-hooks 'cplist-turn-on-mode-hook)
+      (set-window-parameter (selected-window) 'no-delete-other-windows t)
       (set-window-dedicated-p (selected-window) t)
       (run-hooks 'cplist-win-added))))
 

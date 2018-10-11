@@ -36,7 +36,7 @@
 
                   (setq column2 (fourth root))
                   (setq column3 (fifth root))
-                  
+
                   (cond ((not (window-dedicated-p sidebar))
                          (values :window-layout-no-dedicated sidebar))
                         (column3
@@ -178,11 +178,11 @@
                 (cond ((window-dedicated-p (selected-window))
                        (select-window code-win))))))))
 
-       (defadvice display-buffer (before codepilot-windown-layout
-                                         (&optional buffer-or-name action frame))
-         (unless (and (listp action) (eq (car action) 'display-buffer-same-window))
-           (codepilot-display-and-temp-buffer-before-advice buffer-or-name nil frame)))
-       
+       (when (= emacs-major-version 24)
+         (defadvice display-buffer (before codepilot-windown-layout
+                                           (&optional buffer-or-name action frame))
+           (unless (and (listp action) (eq (car action) 'display-buffer-same-window))
+             (codepilot-display-and-temp-buffer-before-advice buffer-or-name nil frame))))
        )
       (t
        (defadvice pop-to-buffer (before codepilot-windown-layout
@@ -198,7 +198,7 @@
        (defadvice display-buffer (before codepilot-windown-layout
                                          (buffer &optional not-this-window frame))
          (codepilot-display-and-temp-buffer-before-advice buffer not-this-window frame))
-       
+
        ))
 
 
@@ -212,7 +212,15 @@
              (t
               ad-do-it)))
       (otherwise
+       (when sidebar
+         (save-selected-window
+           (select-window sidebar)
+           (setq window-size-fixed 'width)))
        ad-do-it
+       (when sidebar
+         (save-selected-window
+           (select-window sidebar)
+           (setq window-size-fixed nil)))
        (when (and sidebar
                   (eq sidebar (selected-window)))
          (other-window -1))))))
@@ -229,17 +237,21 @@
 
 (defun codepilot-layout-activate ()
   (interactive)
-  (ad-activate 'display-buffer)
+  (when (< emacs-major-version 25)
+    (ad-activate 'display-buffer))
   (ad-activate 'pop-to-buffer)
   (ad-activate 'delete-window)
-  (ad-activate 'delete-other-windows))
+  ;(ad-activate 'delete-other-windows)
+  )
 
 (defun codepilot-layout-deactivate ()
   (interactive)
-  (ad-deactivate 'display-buffer)
+  (when (< emacs-major-version 25)
+    (ad-deactivate 'display-buffer))
   (ad-deactivate 'pop-to-buffer)
   (ad-deactivate 'delete-window)
-  (ad-deactivate 'delete-other-windows))
+  ;(ad-deactivate 'delete-other-windows)
+  )
 
 (provide 'cp-layout)
 

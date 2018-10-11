@@ -438,6 +438,7 @@
                              (split-window-vertically)))
                           (other-window 1)
                           (switch-to-buffer buf)
+                          (set-window-parameter (selected-window) 'no-delete-other-windows t)
                           (set-window-dedicated-p (selected-window) t)))
                     (error
                      (pop-to-buffer buf)
