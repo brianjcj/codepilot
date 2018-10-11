@@ -102,6 +102,10 @@
              (message "Sync *Block Traceback*")
              (cp-pb-where-we-are))))))
 
+(defun cp-pb-go-view ()
+  (interactive)
+  (save-selected-window
+    (cp-pb-go)))
 
 (defun cp-pb-go-mouse (e)
   (interactive "e")
@@ -120,6 +124,7 @@
   '(([mouse-3] . cp-pb-go-mouse)
     ([mouse-2] . cp-pb-fold/unfold-mouse)
     ("\r" . cp-pb-go)
+    ("d" . cp-pb-go-view)
     ("0" . delete-window)
     ("k" . delete-window)
     ("q" . delete-window)

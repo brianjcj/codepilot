@@ -151,6 +151,39 @@ have problem under other Emacs versions.
   Refer to the codepilot-scrn folder. 
   *A picture is worth a thousand words*. Have a look.
 
+* Work with Evil
+
+  Vim's key binding is very convenient. Here is my way to work with evil mode. I
+  am thinking about how to integrate with spacemacs...
+
+  #+BEGIN_SRC elisp
+  (progn
+    (evil-define-key 'normal codepilot-ro-mode-map "u" 'gtags-find-tag)
+    (evil-define-key 'normal codepilot-ro-mode-map "i" 'gtags-find-rtag)
+    (evil-define-key 'normal codepilot-ro-mode-map "o" 'gtags-find-symbol)
+    (evil-define-key 'normal codepilot-ro-mode-map "," 'codepilot-previous-buffer)
+    (evil-define-key 'normal codepilot-ro-mode-map "." 'codepilot-forward-buffer)
+    (evil-define-key 'normal codepilot-ro-mode-map "s" 'codepilot-search-hl-again-f)
+    (evil-define-key 'normal codepilot-ro-mode-map "r" 'codepilot-search-hl-again-b)
+    (evil-define-key 'normal codepilot-ro-mode-map "." 'codepilot-forward-buffer)
+    (evil-define-key 'normal codepilot-ro-mode-map ";" 'cp-pb-search-id-and-which-procs)
+    (evil-define-key 'normal codepilot-ro-mode-map "\C-]" 'mycutil-cp-pb-where-we-are)
+    (evil-define-key 'normal codepilot-ro-mode-map "S" 'jump-to-h-c-file)
+    (evil-define-key 'normal codepilot-ro-mode-map "." 'codepilot-forward-buffer)
+    (evil-define-key 'normal codepilot-ro-mode-map "x" 'kill-this-buffer)
+
+    (evil-define-key 'normal gtags-select-mode-map "\r" 'gtags-select-tag)
+    (evil-define-key 'normal cp-pb-mode-map "\r" 'cp-pb-go)
+    (evil-define-key 'normal cp-pb-mode-map "d" 'cp-pb-go-view)
+    ;; (evil-define-key 'normal cplist-mode-map "\r" 'cplist-action)
+    ;; (evil-define-key 'normal cpimenu-mode-map "\r" 'cpimenu-action)
+
+    ;; (evil-set-initial-state 'gtags-select-mode 'emacs)
+    ;; (evil-set-initial-state 'cp-pb-mode 'emacs)
+    (evil-set-initial-state 'cplist-mode 'emacs)
+    (evil-set-initial-state 'cpimenu-mode 'emacs)
+    )
+  #+END_SRC
 
  ----------
 
