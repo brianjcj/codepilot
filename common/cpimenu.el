@@ -164,7 +164,7 @@
          '(1 'cpimenu-keyword-face)
          '(2 'cpimenu-note-face))
    
-   (list "^[ ]*\\([^)\n]+\\) ?("
+   (list "^[ ]*\\([^())\n]+\\) ?("
          '(1 'cpimenu-function-face))
 
    (list "^ +\\(.+\\)\\(|.+|\\)"
