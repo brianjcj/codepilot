@@ -137,7 +137,7 @@
                   nil t nil "-f" "-" "--format=2" "--excmd=number"
                   "--fields=ksS"
                   ;; "--fields=k"
-                  "--regex-c=/^DEFUN[ \t]*\\([ \t]*\"([^\"]+)\"/\\1/z,defun/"
+                  ;; "--regex-c=/^DEFUN[ \t]*\\([ \t]*\"([^\"]+)\"/\\1/z,defun/"  ;; this is used when reading emacs c code. it is broken now. just comment it out
                   myctags-sort-option
                   file-input)
     ;; analyzed the output

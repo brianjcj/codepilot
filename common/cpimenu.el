@@ -501,10 +501,9 @@
           (insert "[*Rescan*] [Ctags] [Cedet] [Name] [Pos]" )
           (insert "\n\n")
           (cpimenu-mode)
-          (setq cpimenu-connected-buffer "")
+          (setq cpimenu-connected-buffer buf-name)
           (when (car ilist)
             (output-imenu-alist ilist nil cedet?))
-          (setq cpimenu-connected-buffer buf-name)
           (goto-char 1)
           (cpfilter-add-edit-entry-field)))))
 
