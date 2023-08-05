@@ -38,12 +38,12 @@
 
 (which-function-mode t)
 
-;; ====================
-;; undo and redo
-;; ====================
-(require 'redo)
-;; (global-set-key [(f5)] 'undo)
-(global-set-key [(shift f5)] 'redo)
+;; ;; ====================
+;; ;; undo and redo
+;; ;; ====================
+;; (require 'redo)
+;; ;; (global-set-key [(f5)] 'undo)
+;; (global-set-key [(shift f5)] 'redo)
 
 
 ;; ================================
@@ -64,22 +64,22 @@
 (global-set-key (kbd "C-x C-b") 'ibuffer)
 
 
-;; linum, much faster than setnu!!! Use it.
-(require 'linum)
-(setq linum-eager nil)
+;; ;; linum, much faster than setnu!!! Use it.
+;; (require 'linum)
+;; (setq linum-eager nil)
 
 
-;; browse-kill-ring
-(require 'browse-kill-ring)
-;; (global-set-key [(control c)(k)] 'browse-kill-ring)
-(browse-kill-ring-default-keybindings)
+;; ;; browse-kill-ring
+;; (require 'browse-kill-ring)
+;; ;; (global-set-key [(control c)(k)] 'browse-kill-ring)
+;; (browse-kill-ring-default-keybindings)
 
 
-(require 'ido)
-(ido-mode t)
+;; (require 'ido)
+;; (ido-mode t)
 
 
-(cua-mode t)
+;; (cua-mode t)
 
 
 (auto-image-file-mode t)
@@ -175,7 +175,7 @@
 (setq skeleton-pair t)
 
 
-(setq tramp-default-method "ftp")
+;; (setq tramp-default-method "ftp")
 
 
 
@@ -227,55 +227,55 @@
 (semantic-mode 1)
 
 
-;; yasnippet
-(add-to-list 'load-path (concat mydir "import/yasnippet-0.6.1c"))
-(require 'yasnippet) ;; not yasnippet-bundle
-(yas/initialize)
-(yas/load-directory (concat mydir "import/yasnippet-0.6.1c/snippets"))
+;; ;; yasnippet
+;; (add-to-list 'load-path (concat mydir "import/yasnippet-0.6.1c"))
+;; (require 'yasnippet) ;; not yasnippet-bundle
+;; (yas/initialize)
+;; (yas/load-directory (concat mydir "import/yasnippet-0.6.1c/snippets"))
 
 
 
-(add-to-list 'load-path (concat mydir "import/AC"))
-(require 'auto-complete-config)
-(add-to-list 'ac-dictionary-directories (concat mydir "import/AC/ac-dict"))
+;; (add-to-list 'load-path (concat mydir "import/AC"))
+;; (require 'auto-complete-config)
+;; (add-to-list 'ac-dictionary-directories (concat mydir "import/AC/ac-dict"))
 
-(require 'auto-complete-clang)
+;; (require 'auto-complete-clang)
 
-(setq ac-auto-start nil)
-(setq ac-quick-help-delay 0.5)
-;; (ac-set-trigger-key "TAB")
-;; (define-key ac-mode-map  [(control tab)] 'auto-complete)
-;; (define-key ac-mode-map  [(meta ?/)] 'auto-complete)
-(defun my-ac-config ()
-  (setq-default ac-sources '(ac-source-abbrev ac-source-dictionary ac-source-words-in-same-mode-buffers))
-  (add-hook 'emacs-lisp-mode-hook 'ac-emacs-lisp-mode-setup)
-  ;; (add-hook 'c-mode-common-hook 'ac-cc-mode-setup)
-  (add-hook 'ruby-mode-hook 'ac-ruby-mode-setup)
-  (add-hook 'css-mode-hook 'ac-css-mode-setup)
-  (add-hook 'auto-complete-mode-hook 'ac-common-setup)
-  (global-auto-complete-mode t))
-(defun my-ac-cc-mode-setup ()
-  ;; (setq ac-sources (append '(ac-source-clang ac-source-yasnippet) ac-sources))
-  (setq ac-sources (append '(ac-source-yasnippet) ac-sources))
-  )
-(add-hook 'c-mode-common-hook 'my-ac-cc-mode-setup)
-;; ac-source-gtags
-(my-ac-config)
-(define-key ac-mode-map [(control tab)] 'ac-complete-clang)
-
-
-(when (file-directory-p (concat mydir "../opt"))
-  (add-to-list 'load-path (concat mydir "../opt"))
-  (load-file (concat mydir "myopt.el")))
+;; (setq ac-auto-start nil)
+;; (setq ac-quick-help-delay 0.5)
+;; ;; (ac-set-trigger-key "TAB")
+;; ;; (define-key ac-mode-map  [(control tab)] 'auto-complete)
+;; ;; (define-key ac-mode-map  [(meta ?/)] 'auto-complete)
+;; (defun my-ac-config ()
+;;   (setq-default ac-sources '(ac-source-abbrev ac-source-dictionary ac-source-words-in-same-mode-buffers))
+;;   (add-hook 'emacs-lisp-mode-hook 'ac-emacs-lisp-mode-setup)
+;;   ;; (add-hook 'c-mode-common-hook 'ac-cc-mode-setup)
+;;   (add-hook 'ruby-mode-hook 'ac-ruby-mode-setup)
+;;   (add-hook 'css-mode-hook 'ac-css-mode-setup)
+;;   (add-hook 'auto-complete-mode-hook 'ac-common-setup)
+;;   (global-auto-complete-mode t))
+;; (defun my-ac-cc-mode-setup ()
+;;   ;; (setq ac-sources (append '(ac-source-clang ac-source-yasnippet) ac-sources))
+;;   (setq ac-sources (append '(ac-source-yasnippet) ac-sources))
+;;   )
+;; (add-hook 'c-mode-common-hook 'my-ac-cc-mode-setup)
+;; ;; ac-source-gtags
+;; (my-ac-config)
+;; (define-key ac-mode-map [(control tab)] 'ac-complete-clang)
 
 
+;; (when (file-directory-p (concat mydir "../opt"))
+;;   (add-to-list 'load-path (concat mydir "../opt"))
+;;   (load-file (concat mydir "myopt.el")))
 
-(require 'smart-mark)
 
 
-(add-to-list 'load-path (concat mydir "import/anything"))
-(require 'anything-config)
-(require 'anything-gtags)
+;; (require 'smart-mark)
+
+
+;; (add-to-list 'load-path (concat mydir "import/anything"))
+;; (require 'anything-config)
+;; (require 'anything-gtags)
 
 
 ;; (add-hook 'after-init-hook (lambda ()

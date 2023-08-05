@@ -20,8 +20,8 @@ have problem under other Emacs versions.
 
 * My way in Emacs
 
- - *codepilot-ro-mode* (Read Only) is enabled by default. 
-   
+ - *codepilot-ro-mode* (Read Only) is enabled by default.
+
    When this mode is enabled, buffers having C/C++/Java mode enabled
    will become read-only and then you can access many useful commands
    and functions by just one single key. e.g.,
@@ -46,15 +46,15 @@ have problem under other Emacs versions.
      - ` : minimize/restore sidebar
      - 1 : same as C-x 1
      - and more.
-    
+
    It is very convenient when you just want to reading with
    editing. See the shadow of VI?
-  
+
    codepilot-ro-mode can be toggled by "M-x cpro" and click a button in
    toolbar.
 
  - Right button of the mouse.
-   
+
    I use right button of the mouse for clicking links and jumping. Not
    double click! Try to use right button to click somewhere you may
    discover some functions you don't know before.
@@ -89,7 +89,7 @@ have problem under other Emacs versions.
 
  - type 'g' in *IDList* buffer to update it.
 
- - type 'g' in *CPImenu* buffer to update it. 
+ - type 'g' in *CPImenu* buffer to update it.
 
  - F3: occur (word)
 
@@ -115,12 +115,12 @@ have problem under other Emacs versions.
 * Notes:
 
   - Layout:
-    
+
     In order to implement the sidebar and specified window
     layout/behaviors, I add some advices and hooks to modify some
     default window behavior. It may not work very well with some
-    feature/scripts (which I don't use). 
-    
+    feature/scripts (which I don't use).
+
     If you meet such situations, Just type the following command to
     deactivate these advices/hooks
 
@@ -148,42 +148,7 @@ have problem under other Emacs versions.
 
 * Screenshot
 
-  Refer to the codepilot-scrn folder. 
+  Refer to the codepilot-scrn folder.
   *A picture is worth a thousand words*. Have a look.
 
-* Work with Evil
-
-  Vim's key binding is very convenient. Here is my way to work with evil mode. I
-  am thinking about how to integrate with spacemacs...
-
-  #+BEGIN_SRC elisp
-  (progn
-    (evil-define-key 'normal codepilot-ro-mode-map "u" 'gtags-find-tag)
-    (evil-define-key 'normal codepilot-ro-mode-map "i" 'gtags-find-rtag)
-    (evil-define-key 'normal codepilot-ro-mode-map "o" 'gtags-find-symbol)
-    (evil-define-key 'normal codepilot-ro-mode-map "," 'codepilot-previous-buffer)
-    (evil-define-key 'normal codepilot-ro-mode-map "." 'codepilot-forward-buffer)
-    (evil-define-key 'normal codepilot-ro-mode-map "s" 'codepilot-search-hl-again-f)
-    (evil-define-key 'normal codepilot-ro-mode-map "r" 'codepilot-search-hl-again-b)
-    (evil-define-key 'normal codepilot-ro-mode-map "." 'codepilot-forward-buffer)
-    (evil-define-key 'normal codepilot-ro-mode-map ";" 'cp-pb-search-id-and-which-procs)
-    (evil-define-key 'normal codepilot-ro-mode-map "\C-]" 'mycutil-cp-pb-where-we-are)
-    (evil-define-key 'normal codepilot-ro-mode-map "S" 'jump-to-h-c-file)
-    (evil-define-key 'normal codepilot-ro-mode-map "." 'codepilot-forward-buffer)
-    (evil-define-key 'normal codepilot-ro-mode-map "x" 'kill-this-buffer)
-
-    (evil-define-key 'normal gtags-select-mode-map "\r" 'gtags-select-tag)
-    (evil-define-key 'normal cp-pb-mode-map "\r" 'cp-pb-go)
-    (evil-define-key 'normal cp-pb-mode-map "d" 'cp-pb-go-view)
-    ;; (evil-define-key 'normal cplist-mode-map "\r" 'cplist-action)
-    ;; (evil-define-key 'normal cpimenu-mode-map "\r" 'cpimenu-action)
-
-    ;; (evil-set-initial-state 'gtags-select-mode 'emacs)
-    ;; (evil-set-initial-state 'cp-pb-mode 'emacs)
-    (evil-set-initial-state 'cplist-mode 'emacs)
-    (evil-set-initial-state 'cpimenu-mode 'emacs)
-    )
-  #+END_SRC
-
  ----------
-

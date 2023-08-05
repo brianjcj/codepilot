@@ -191,9 +191,11 @@
 
 ;; completsion function for completing-read.
 (defun gtags-completing-gtags (string predicate code)
-  (gtags-completing 'gtags string predicate code))
+  (if (string-empty-p string) nil
+    (gtags-completing 'gtags string predicate code)))
 (defun gtags-completing-gsyms (string predicate code)
-  (gtags-completing 'gsyms string predicate code))
+  (if (string-empty-p string) nil
+    (gtags-completing 'gsyms string predicate code)))
 ;; common part of completing-XXXX
 ;;   flag: 'gtags or 'gsyms
 (defun gtags-completing (flag string predicate code)
@@ -253,7 +255,7 @@
       (setq prompt (concat "Find tag: (default " tagname ") "))
      (setq prompt "Find tag: "))
     (setq input (completing-read prompt 'gtags-completing-gtags
-                  nil nil nil gtags-history-list))
+                  nil nil nil gtags-history-list tagname))
     (if (not (equal "" input))
       (setq tagname input))
     (gtags-push-context)
@@ -268,7 +270,7 @@
      (setq prompt (concat "Find tag (reference): (default " tagname ") "))
     (setq prompt "Find tag (reference): "))
    (setq input (completing-read prompt 'gtags-completing-gtags
-                 nil nil nil gtags-history-list))
+                 nil nil nil gtags-history-list tagname))
    (if (not (equal "" input))
      (setq tagname input))
     (gtags-push-context)
@@ -283,7 +285,7 @@
         (setq prompt (concat "Find symbol: (default " tagname ") "))
       (setq prompt "Find symbol: "))
     (setq input (completing-read prompt 'gtags-completing-gsyms
-                  nil nil nil gtags-history-list))
+                  nil nil nil gtags-history-list tagname))
     (if (not (equal "" input)) (setq tagname input))
     (gtags-push-context)
     (gtags-goto-tag tagname "s")))
