@@ -38,6 +38,9 @@
 
 (which-function-mode t)
 
+
+(pushnew 'nxml-mode codepilot-cc-major-modes)
+
 ;; ;; ====================
 ;; ;; undo and redo
 ;; ;; ====================
@@ -224,8 +227,9 @@
 
 ;; active codepilot!
 (brian-activate-codepilot-cc)
-(semantic-mode 1)
+;; (semantic-mode 1)
 
+(myctags-imenu-active)
 
 ;; ;; yasnippet
 ;; (add-to-list 'load-path (concat mydir "import/yasnippet-0.6.1c"))
@@ -284,3 +288,13 @@
 ;;                              ;; (codepilot-ide)
 ;;                              )
 ;;           :append)
+
+(when (eq system-type 'windows-nt)
+  ;; fix rg.el
+  (defadvice rg-run (around rg-run (pattern files dir &optional literal confirm flags))
+    (let ((coding-system-for-read 'utf-8))
+      ad-do-it))
+  (ad-activate 'rg-run)
+  ;; fix consult-ripgrep
+  (add-to-list 'process-coding-system-alist
+             '("rg" . (utf-8 . undecided-unix))))

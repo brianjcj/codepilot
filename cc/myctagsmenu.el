@@ -130,9 +130,9 @@
   (let (tag ln kind buf
            tag-line items options m-str
            tag-lines parents signature)
-    
+
     (erase-buffer)
-    
+
     (call-process exuberant-ctags-program
                   nil t nil "-f" "-" "--format=2" "--excmd=number"
                   "--fields=ksS"
@@ -157,7 +157,7 @@
     (while (not (eobp))
       (setq tag-line (buffer-substring-no-properties (point) (line-end-position)))
       (setq items (split-string tag-line "\t"))
-      
+
       (setq tag (car items))
       (setq ln (string-to-number (nth 2 items)))
       (setq kind (aref (nth 3 items) 0))
@@ -194,7 +194,7 @@
               file-input ll tag-lines myctags-cache myctags-class-list)
 
     (setq file-input (myctags-make-temp-file-if-file-nonlocal file))
-    
+
     (save-match-data
       (with-temp-buffer
         (setq tag-lines (myctags-get-tags-list file-input m))))
@@ -202,13 +202,13 @@
     (when tag-lines
       (setq tag-lines (nreverse tag-lines))
       (set (make-local-variable 'myctags-tag-vect) (make-vector (length tag-lines) nil))
-      
+
       ;; get the point of the line number.
       (save-restriction
         (widen)
         (save-excursion
           (goto-char (point-min))
-          
+
           (let (ln (prev-line 1) delta (idx 0))
             (dolist (line tag-lines)
               (setq ln (car line))
@@ -217,7 +217,7 @@
 
               (aset myctags-tag-vect idx (cons (point) line))
               (setq prev-line ln)
-              
+
               (setq idx (1+ idx)))))))
 
     (cond ((eq major-mode 'java-mode)
@@ -227,17 +227,17 @@
                   (setq myctags-cache (copy-tree myctags-java-kinds)))))
           (t
            (setq myctags-cache (copy-tree myctags-ckinds))))
-    
+
     (setq myctags-class-list nil)
 
-    
+
     (let ((idx 0) item pos tag kind parents signature
           in-class
           (myctags-include-parmlist (if (eq major-mode 'c-mode) nil t))
           aso class-name in-class al)
 
       (while (< idx (length myctags-tag-vect))
-        
+
         (setq item (aref myctags-tag-vect idx))
 
         (setq pos (first item))
@@ -245,7 +245,7 @@
         (setq kind (fourth item))
         (setq parents (fifth item))
         (setq signature (sixth item))
-        
+
         (setq in-class nil)
         (when parents
           (cond ((or (eq ?f kind)
@@ -286,7 +286,7 @@
         (setq idx (1+ idx)))
 
       (setq myctags-class-list (nreverse myctags-class-list)))
-    
+
     (save-excursion
       (dolist (i myctags-cache)
         (when (cdr (cdr i))
@@ -329,7 +329,7 @@
                   "--regex-c=/^DEFUN[ \t]*\\([ \t]*\"([^\"]+)\"/\\1/i,defun/"
                   myctags-sort-option
                   buf)
-        
+
         ;; (call-process exuberant-ctags-program
         ;;               nil t nil "-f" "-" "--format=2"
         ;;               ;; "--excmd=number"
@@ -438,7 +438,7 @@
                  (list name pos name pos))))))))
 
 (defun cc-which-func ()
-  
+
   (let (name
         pos win buf-name update?
         cpimenu-not-care?
@@ -469,7 +469,7 @@
               (let ((loo t)
                     (org-pos (point))
                     pos-in-line)
-                
+
                 (while (and loo (not (eobp)))
                   (cond ((and (setq pos-in-line (get-text-property (point) 'cpimenu-target))
                               (= pos pos-in-line)
@@ -494,7 +494,7 @@
         al tag ln kind
         file-input buf
         (ilist (cc-create-index-function)))
-    
+
     (setq file-input (myctags-make-temp-file-if-file-nonlocal file))
 
     (setq buf (get-buffer-create "*MyCtagsMenu*"))
@@ -505,7 +505,7 @@
     (setq cpimenu-refresh-func 'myctags)
 
     (cpimenu-output buf-name ilist nil)
-    
+
     (cond ((get-buffer-window "*MyCtagsMenu*"))
           (t (multiple-value-bind (ret sidebar code-win bottom-win)
                  (codepilot-window-layout-wise)

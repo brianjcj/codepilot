@@ -29,7 +29,7 @@
   (let ((b (get-buffer cplist-buf-name))
         ;;(b-name (file-name-nondirectory buffer-file-name))
         (b-name (buffer-name)))
-    
+
     (when (and b
                (in-codepilot-cc-major-modes? major-mode)
                b-name)
@@ -41,7 +41,7 @@
 
   (let ((b (get-buffer cplist-buf-name))
         (b-name (buffer-name)))
-    
+
     (when (and b
                (eq major-mode 'dired-mode)
                b-name)
@@ -53,7 +53,7 @@
 
   (insert "[All] [CScope] [GTags]\n")
   (insert "[Buffer] [Dired] [Speedbar]\n")
-  
+
   (when (or (eq cplist-type 'all)
             (eq cplist-type 'cscope))
     (insert-image codepilot-image-bucket-1 "@")
@@ -103,7 +103,7 @@
         (when (eq mm 'dired-mode)
           (insert "  " (concat (buffer-name b) "\n")))))
     (insert "\n"))
-  
+
   ;; (insert-image codepilot-image-bucket-1 "@")
   ;; (insert " GTags History List  \n")
   ;; ;; (dolist (i (delete-duplicates find-tag-history :from-end t :test #'string=))
@@ -119,7 +119,7 @@
   ;;   (when i
   ;;     (insert "  > " i "\n")))
   ;; (insert "\n")
-  
+
   )
 
 (defun cplist-cc-for-cplist-action ()

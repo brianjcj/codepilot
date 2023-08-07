@@ -404,15 +404,20 @@
 
 ;; completion function for completing-read.
 (defun gtags-completing-gtags (string predicate code)
-  (gtags-completing 'gtags string predicate code))
+  (unless (string-empty-p string)
+    (gtags-completing 'gtags string predicate code)))
 (defun gtags-completing-grtags (string predicate code)
-  (gtags-completing 'grtags string predicate code))
+  (unless (string-empty-p string)
+    (gtags-completing 'grtags string predicate code)))
 (defun gtags-completing-gsyms (string predicate code)
-  (gtags-completing 'gsyms string predicate code))
+  (unless (string-empty-p string)
+    (gtags-completing 'gsyms string predicate code)))
 (defun gtags-completing-files (string predicate code)
-  (gtags-completing 'files string predicate code))
+  (unless (string-empty-p string)
+    (gtags-completing 'files string predicate code)))
 (defun gtags-completing-idutils (string predicate code)
-  (gtags-completing 'idutils string predicate code))
+  (unless (string-empty-p string)
+    (gtags-completing 'idutils string predicate code)))
 ;; common part of completing-XXXX
 ;;   flag: 'gtags or 'gsyms or 'files
 (defun gtags-completing (flag string predicate code)
@@ -508,7 +513,7 @@
       (setq prompt (concat "Find tag: (default " tagname ") "))
      (setq prompt "Find tag: "))
     (setq input (completing-read prompt 'gtags-completing-gtags
-                  nil nil nil gtags-history-list))
+                  nil nil nil gtags-history-list tagname))
     (if (not (equal "" input))
       (setq tagname input))
     (gtags-push-context)
@@ -528,7 +533,7 @@
      (setq prompt (concat "Find tag (reference): (default " tagname ") "))
     (setq prompt "Find tag (reference): "))
    (setq input (completing-read prompt 'gtags-completing-grtags
-                 nil nil nil gtags-history-list))
+                 nil nil nil gtags-history-list tagname))
    (if (not (equal "" input))
      (setq tagname input))
     (gtags-push-context)
@@ -543,7 +548,7 @@
         (setq prompt (concat "Find symbol: (default " tagname ") "))
       (setq prompt "Find symbol: "))
     (setq input (completing-read prompt 'gtags-completing-gsyms
-                  nil nil nil gtags-history-list))
+                  nil nil nil gtags-history-list tagname))
     (if (not (equal "" input)) (setq tagname input))
     (gtags-push-context)
     (gtags-goto-tag tagname "s")))
@@ -561,7 +566,7 @@
     (if tagname
         (setq prompt (concat "Find pattern: (default " tagname ") "))
       (setq prompt "Find pattern: "))
-    (setq input (read-from-minibuffer prompt nil nil nil gtags-history-list))
+    (setq input (read-from-minibuffer prompt nil nil nil gtags-history-list tagname))
     (if (not (equal "" input)) (setq tagname input))
     (gtags-push-context)
     (gtags-goto-tag tagname (if gtags-grep-all-text-files "go" "g"))))
@@ -575,7 +580,7 @@
         (setq prompt (concat "Find token: (default " tagname ") "))
       (setq prompt "Find token: "))
     (setq input (completing-read prompt 'gtags-completing-idutils
-                  nil nil nil gtags-history-list))
+                  nil nil nil gtags-history-list tagname))
     (if (not (equal "" input)) (setq tagname input))
     (gtags-push-context)
     (gtags-goto-tag tagname "I")))
@@ -586,7 +591,7 @@
   (let (tagname prompt input)
     (setq prompt "Find files: ")
     (setq input (completing-read prompt 'gtags-completing-files
-                  nil nil nil gtags-history-list))
+                  nil nil nil gtags-history-list tagname))
     (if (not (equal "" input)) (setq tagname input))
     (gtags-push-context)
     (gtags-goto-tag tagname (if gtags-find-all-text-files "Po" "P"))))
@@ -702,7 +707,7 @@
 ;;
 
 ;; goto tag's point
-(defun gtags-goto-tag (tagname flag &optional other-win)
+(defun gtags-goto-tag-backup (tagname flag &optional other-win)
   (let (option context save prefix buffer lines flag-char)
     (setq save (current-buffer))
     (setq flag-char (string-to-char flag))
@@ -832,7 +837,7 @@
          (gtags-select-mode)))))))
 
 ;; select a tag line from lines
-(defun gtags-select-it (delete &optional other-win)
+(defun gtags-select-it-backup (delete &optional other-win)
   (let (line file)
     ;; get context from current tag line
     (beginning-of-line)
@@ -918,7 +923,7 @@ with no args, if that value is non-nil."
 )
 
 ;; make gtags select-mode
-(defun gtags-select-mode ()
+(defun gtags-select-mode-backup ()
   "Major mode for choosing a tag from tags list.
 
 Select a tag in tags list and move there.

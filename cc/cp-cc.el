@@ -54,7 +54,7 @@ showed in the codepilot sidebar."
           (setq mark-found t)
           (push s buf-list)
           (setq prompt (concat prompt s "  ")))))
-    
+
     (when (and mark-found
            (y-or-n-p (concat prompt "\nReally delete above buffers? ")))
       (dolist (b buf-list)
@@ -149,7 +149,7 @@ showed in the codepilot sidebar."
       (backward-char))
     (when (looking-at "\n")
       (backward-char))
-    
+
     (save-excursion
       (save-match-data
         (setq pos (line-end-position))
@@ -165,7 +165,7 @@ showed in the codepilot sidebar."
                  (goto-char (point-max))))
           (skip-chars-backward "\s\n")
           (setq e (point))
-          
+
           (cptree-hide-region b e 'cptree)
 
           (when (> (window-start) b)
@@ -284,10 +284,10 @@ showed in the codepilot sidebar."
          c)
 
     ;; (message (format "%s, hl begin, Current Point: %d" (current-time-string) (point)))
-    
+
     (when (= 0 (length text))
       (error "Search string is empty!"))
-    
+
     (setq codepilot-current-search-text (if (eq 'id s-type) text (downcase text)))
     (setq codepilot-current-search-type search-type)
 
@@ -325,7 +325,7 @@ showed in the codepilot sidebar."
                    ;; search again
                    ())
 
-                  
+
                   ;; brian update later todo
                   ;; ((and (eq s-type 'comment)
                   ;;       (not (my-in-comment))
@@ -333,7 +333,7 @@ showed in the codepilot sidebar."
                   ;;  ;;search again
                   ;;  ())
 
-                  
+
                   ((and (eq s-type 'literal)
                         (or (not (setq c (my-in-quote/comment)))
                             (eq (char-after c) ?%)))
@@ -355,7 +355,7 @@ showed in the codepilot sidebar."
               (which-func-update)
             (error nil))
           ;; (codepilot-highlight (point-min) (point-max) text-for-lazy-hl t t)
-          ))      
+          ))
       (unless backward
         (backward-char)))
     ;; brian: debug
@@ -368,12 +368,12 @@ showed in the codepilot sidebar."
   (setq codepilot-search-and-hl-text-func 'cc-search-and-hl-text))
 
 (dolist (mode codepilot-cc-major-modes) 'cc-set-search-and-hl-func
-        (add-hook (intern-soft (concat (prin1-to-string mode) "-hook")) 
+        (add-hook (intern-soft (concat (prin1-to-string mode) "-hook"))
                   'cc-set-search-and-hl-func))
 
 (defun codepilot-highlight-2 (buf)
   ;; (message (format "When In hl-2: %s, Current Point: %d" (current-time-string) (point)))
-  
+
   (let ((codepilot-mark-tag 'codepilot-highlight-2)
         s-text)
     (condition-case nil
@@ -425,7 +425,7 @@ showed in the codepilot sidebar."
   (dolist (b codepilot-buffer-to-bury)
     (when (get-buffer b)
       (bury-buffer b)))
-  
+
   (let ((b (get-buffer cplist-buf-name)))
     (when b
       (let ((name (buffer-name))
@@ -500,54 +500,14 @@ showed in the codepilot sidebar."
           )))
     (cond (codepilot-ro-enabled-globally
            (dolist (mode codepilot-cc-major-modes)
-             (add-hook (intern-soft (concat (prin1-to-string mode) "-hook")) 
+             (add-hook (intern-soft (concat (prin1-to-string mode) "-hook"))
                        (lambda()(interactive)(codepilot-ro-mode 1)))))
           (t
            (dolist (mode codepilot-cc-major-modes)
-             (remove-hook (intern-soft (concat (prin1-to-string mode) "-hook")) 
+             (remove-hook (intern-soft (concat (prin1-to-string mode) "-hook"))
                           (lambda()(interactive)(codepilot-ro-mode 1))))))))
 
 (defalias 'cpro 'codepilot-ro-toggle-globally)
-
-(define-key codepilot-ro-mode-map "-" 'cp-pb-which-procs-i-in)
-(define-key codepilot-ro-mode-map "[" 'cp-pb-search-id-and-which-procs)
-(define-key codepilot-ro-mode-map "]" 'mycutil-cp-pb-where-we-are)
-(define-key codepilot-ro-mode-map [(f6)] 'mycutil-which-block)
-(define-key codepilot-ro-mode-map "/" 'codepilot-search-hi)
-;; (define-key codepilot-ro-mode-map "n" 'codepilot-search-hl-again-f)
-;; (define-key codepilot-ro-mode-map "N" 'codepilot-search-hl-again-b)
-;; (define-key codepilot-ro-mode-map "v" 'find-tag)
-(define-key codepilot-ro-mode-map "7" 'gtags-find-tag)
-(define-key codepilot-ro-mode-map "8" 'gtags-find-rtag)
-(define-key codepilot-ro-mode-map "9" 'gtags-find-symbol)
-(define-key codepilot-ro-mode-map "i" 'gtags-find-rtag)
-(define-key codepilot-ro-mode-map "o" 'gtags-find-symbol)
-(define-key codepilot-ro-mode-map "j" 'gtags-find-tag)
-(define-key codepilot-ro-mode-map "l" 'gtags-find-file)
-(define-key codepilot-ro-mode-map "`" 'cplist-minimize/restore-sidebar)
-(define-key codepilot-ro-mode-map "w" 'jump-to-h-c-file)
-(define-key codepilot-ro-mode-map "\M-j" 'semantic-complete-jump)
-(define-key codepilot-ro-mode-map "u" 'cptree-unfold-all)
-(define-key codepilot-ro-mode-map "v" (lambda ()
-                                        (interactive)
-                                        (cond ((eq major-mode 'gtags-select-mode)
-                                               (mygtags-toggle-folding))
-                                              (t
-                                               (hs-toggle-hiding)))))
-
-(define-key codepilot-ro-mode-map "a" 'ffap)
-(define-key codepilot-ro-mode-map ";" (lambda ()
-                                        (interactive)
-                                        (switch-to-buffer (other-buffer))
-                                        ))
-(define-key codepilot-ro-mode-map ":" 'goto-line)
-
-(define-key cplist-mode-map "v" 'cplist-toggle-folding)
-(define-key cplist-mode-map "z" 'cplist-fold-all)
-(define-key cplist-mode-map "o" 'cplist-unfold-all)
-
-(define-key codepilot-ro-mode-map "r" 're)
-(define-key codepilot-ro-mode-map "R" 're-r)
 
 
 (provide 'cp-cc)

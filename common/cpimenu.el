@@ -50,7 +50,7 @@
                                          (if (overlayp (cdr ii))
                                              (overlay-start (cdr ii))
                                              (marker-position (cdr ii)))))
-  
+
   (insert "\n"))
 
 (defun output-imenu-alist (ilist &optional prefix-str cedet?)
@@ -58,7 +58,7 @@
   (let (pos ll ll2 ind ll3
             block-start
             (cpimenu--sort-by-position-fn
-             (cond (cedet? 
+             (cond (cedet?
                     'cpimenu--sort-by-position-ov)
                    (t
                     'imenu--sort-by-position))))
@@ -137,11 +137,11 @@
 
 (defvar cpimenu-font-lock-keywords
   (list
-   
+
    (list "@ \\(.+\\)\\(|.+|\\)"
          '(1 'cpimenu-head-face)
          '(2 'cpimenu-info-face))
-   
+
    (list "@ \\(.+\\)$"
          '(1 'cpimenu-head-face))
 
@@ -149,7 +149,7 @@
          '(1 'cpimenu-note-face)
          '(2 'cpimenu-function-face)
          '(3 'cpimenu-info-face))
-   
+
    (list "\\((.*$\\)"  ; (....
          '(1 'cpimenu-info-face))
 
@@ -163,7 +163,7 @@
    (list "^[ ]*\\([^ )[\n]+\\) *\\(\\[.*?\\]\\)"
          '(1 'cpimenu-keyword-face)
          '(2 'cpimenu-note-face))
-   
+
    (list "^[ ]*\\([^())\n]+\\) ?("
          '(1 'cpimenu-function-face))
 
@@ -173,7 +173,7 @@
 
    (list "\\[.+?\\]"
          '(0 'link)))
-  
+
   "font-lock keywords setting for cpxref buffers.")
 
 (defun cpimenu-font-lock-setup ()
@@ -291,7 +291,7 @@
            ;; fold/unfold it.
            (end-of-line)
            (cpimenu-toggle-folding))
-          
+
           ((looking-at "^[ \t]*$"))
           (t
            (when (setq to (get-text-property (point) 'cpimenu-target))
@@ -525,79 +525,96 @@
 
 (defvar cpimenu-return-pos nil)
 
-(defun cpimenu-semantic-which-func-and-pos ()
-  ;; assume the semantic is enabled for the buffer
-  (let ((taglist (semantic-find-tag-by-overlay)))
-    (when taglist
-      (let* ((name (semantic-default-which-function taglist))
-             (cur-tag (car (nreverse taglist))))
-        (cons name (overlay-start (nth 4 cur-tag)))))))
+;; (defun cpimenu-semantic-which-func-and-pos ()
+;;   ;; assume the semantic is enabled for the buffer
+;;   (let ((taglist (semantic-find-tag-by-overlay)))
+;;     (when taglist
+;;       (let* ((name (semantic-default-which-function taglist))
+;;              (cur-tag (car (nreverse taglist))))
+;;         (cons name (overlay-start (nth 4 cur-tag)))))))
+
+;; copy from which-func.el. just without calling the hooks
+(defun which-function-without-hook ()
+  "Return current function name based on point.
+Uses `which-func-functions', `add-log-current-defun'.
+or `imenu--index-alist'
+If no function name is found, return nil."
+  (let (name pos)
+    ;; Try using add-log support.
+    ;; (when (null name)
+      ;; (setq name (add-log-current-defun)))
+    ;; If Imenu is loaded, try to make an index alist with it.
+    ;; If `add-log-current-defun' ran and gave nil, accept that.
+    (progn ;; when (and (null name) (null add-log-current-defun-function))
+      (when (and ;; (null name)
+             (boundp 'imenu--index-alist)
+                 (or (null imenu--index-alist)
+                     ;; Update if outdated
+                     (/= (buffer-chars-modified-tick) imenu-menubar-modified-tick))
+             (null which-function-imenu-failed))
+        (ignore-errors (imenu--make-index-alist t))
+        (unless imenu--index-alist
+          (setq-local which-function-imenu-failed t)))
+      ;; If we have an index alist, use it.
+      (when (and ;; (null name)
+             (boundp 'imenu--index-alist) imenu--index-alist)
+        (let ((alist imenu--index-alist)
+              (minoffset (point-max))
+              offset pair mark imstack namestack)
+          ;; Elements of alist are either ("name" . marker), or
+          ;; ("submenu" ("name" . marker) ... ). The list can be
+          ;; arbitrarily nested.
+          (while (or alist imstack)
+            (if (null alist)
+                (setq alist     (car imstack)
+                      namestack (cdr namestack)
+                      imstack   (cdr imstack))
+
+              (setq pair (car-safe alist)
+                    alist (cdr-safe alist))
+              (cond
+               ((atom pair))            ; Skip anything not a cons.
+
+               ((imenu--subalist-p pair)
+                (setq imstack   (cons alist imstack)
+                      namestack (cons (car pair) namestack)
+                      alist     (cdr pair)))
+
+               ((or (number-or-marker-p (setq mark (cdr pair)))
+            (and (overlayp mark)
+                 (setq mark (overlay-start mark))))
+                (when (and (>= (setq offset (- (point) mark)) 0)
+                           (< offset minoffset)) ; Find the closest item.
+                  (setq minoffset offset
+                        pos (cdr pair)
+                        name (if (null which-func-imenu-joiner-function)
+                                 (car pair)
+                               (funcall
+                                which-func-imenu-joiner-function
+                                (reverse (cons (car pair) namestack)))))))))))))
+
+    ;; Filter the name if requested.
+    (when name
+      (when (overlayp pos)
+        (setq pos (overlay-start pos)))
+      (if which-func-cleanup-function
+      (funcall which-func-cleanup-function name)
+    (cons name pos)))))
 
 (defun cpimenu-which-func (&optional taglist) ;; =ToSync= with which-func.el
-  (let (name pos win buf-name update? ooo (tree-updated? t))
-    (cond ((and (featurep 'semantic) (semantic-active-p))
-           (if (setq ooo (cpimenu-semantic-which-func-and-pos))
-               (progn
-                 (setq pos (cdr ooo))
-                 (setq name (car ooo)))
-             (setq tree-updated? (semantic-parse-tree-up-to-date-p))))
-          (t
-           ;; If Imenu is loaded, try to make an index alist with it.
-           (when (and (boundp 'imenu--index-alist) (null imenu--index-alist)
-                      (null which-function-imenu-failed))
-             (imenu--make-index-alist t)
-             (unless imenu--index-alist
-               (make-local-variable 'which-function-imenu-failed)
-               (setq which-function-imenu-failed t)))
-           ;; If we have an index alist, use it.
-           (when (and (boundp 'imenu--index-alist) imenu--index-alist)
-             (let ((alist imenu--index-alist)
-                   (minoffset (point-max))
-                   offset pair mark imstack namestack)
-               ;; Elements of alist are either ("name" . marker), or
-               ;; ("submenu" ("name" . marker) ... ). The list can be
-               ;; arbitrarily nested.
-               (while (or alist imstack)
-                 (if alist
-                     (progn
-                       (setq pair (car-safe alist)
-                             alist (cdr-safe alist))
+  (let (name pos win buf-name update? ooo (tree-updated? t) pair)
 
-                       (cond ((atom pair)) ; skip anything not a cons
-
-                             ((imenu--subalist-p pair)
-                              (setq imstack   (cons alist imstack)
-                                    namestack (cons (car pair) namestack)
-                                    alist     (cdr pair)))
-
-                             ((number-or-marker-p (setq mark (cdr pair)))
-                              (if (>= (setq offset (- (point) mark)) 0)
-                                  (if (< offset minoffset) ; find the closest item
-                                      (setq minoffset offset
-                                            pos (cdr pair)
-                                            name (funcall
-                                                  which-func-imenu-joiner-function
-                                                  (reverse (cons (car pair)
-                                                                 namestack))))
-                                    ;; Entries in order, so can skip all those after point.
-                                    ;; (setq elem nil) ;; brian!!! TODO
-
-                                    )))))
-                   (setq alist     (car imstack)
-                         namestack (cdr namestack)
-                         imstack   (cdr imstack))))))
-
-           ;; Try using add-log support.
-           (when (and (null name) (boundp 'add-log-current-defun-function)
-                      add-log-current-defun-function)
-             (setq name (funcall add-log-current-defun-function)))
-           ;; Filter the name if requested.
-           (when name
-             (setq name
-                   (if which-func-cleanup-function
-                       (funcall which-func-cleanup-function name)
-                     name)))))
-    
+        ;; (cond ((and (featurep 'semantic) (semantic-active-p))
+        ;;    (if (setq ooo (cpimenu-semantic-which-func-and-pos))
+        ;;        (progn
+        ;;          (setq pos (cdr ooo))
+        ;;          (setq name (car ooo)))
+        ;;      (setq tree-updated? (semantic-parse-tree-up-to-date-p))))
+        ;;   (t
+    (setq pair (which-function-without-hook))
+    (when pair
+      (setq name (car pair)
+            pos (cdr pair)))
 
     (setq buf-name (buffer-name))
     (when (setq win (get-buffer-window cpimenu-buf-name))
@@ -629,18 +646,22 @@
                 (goto-char (point-min))
                 (while (and loo (not (eobp)))
                   (cond ((and (setq pos-in-line (get-text-property (point) 'cpimenu-target))
+                              (number-or-marker-p pos)
                               (= pos pos-in-line))
                          (setq loo nil)
                          (setq pos-f (point)))
                         (t
                          (forward-line))))))
-            (when pos-f
-              (goto-char pos-f)
-              ;; (cpimenu-hl-text (match-beginning 0) (match-end 0))
-              (cpimenu-hl-text (line-beginning-position) (line-end-position))
-              ;; (recenter (/ (window-height) 2))
-              )))
-        ))
+            (if pos-f
+                (progn
+                  (goto-char pos-f)
+                  ;; (cpimenu-hl-text (match-beginning 0) (match-end 0))
+                  (cpimenu-hl-text (line-beginning-position) (line-end-position))
+                  ;; (recenter (/ (window-height) 2))
+                  )
+              (ignore-errors
+                (cpimenu-rescan)
+                (cpimenu)))))))
     (when name
       (if cpimenu-return-pos
           (cons name pos)
@@ -661,7 +682,7 @@
     (when (eq (get-buffer-window cpimenu-buf-name) window)
       (select-window window))))
 
-(defadvice mwheel-scroll (before mwheel-scroll (event))
+(defadvice mwheel-scroll (before mwheel-scroll (event &optional ARG))
   (let* ((end-position (event-end event))
          (window (nth 0 end-position)))
     (when (eq (get-buffer-window cpimenu-buf-name) window)
@@ -669,7 +690,7 @@
 
 ;; (defadvice semantic-default-which-function (after semantic-default-which-function (taglist))
 ;;   (cpimenu-which-func taglist))
-;;  
+;;
 ;; (ad-activate 'semantic-default-which-function)
 
 (defvar cpimenu-menu
@@ -707,7 +728,7 @@
 
 (define-key cpimenu-mode-map "\r" 'cpimenu-action)
 (define-key cpimenu-mode-map "\t" 'cpimenu-tab)
-(define-key cpimenu-mode-map "\M-n" 'cpfilter-erase)
+;; (define-key cpimenu-mode-map "\M-n" 'cpfilter-erase)
 
 
 (defun cpimenu-activate ()

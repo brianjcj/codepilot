@@ -71,7 +71,7 @@
 ;; config
 
 ;; (global-set-key "\M-n" 'ido-goto-symbol)
-(global-set-key "\M-n" 'cpimenu-go)
+;; (global-set-key "\M-n" 'cpimenu-go)
 
 (codepilot-ro-toggle-globally)
 
@@ -121,7 +121,7 @@
 
 (define-key cplist-mode-map "\r" 'cplist-action)
 (define-key cplist-mode-map "\t" 'cplist-cc-tab)
-(define-key cplist-mode-map "\M-n" 'cpfilter-erase)
+;; (define-key cplist-mode-map "\M-n" 'cpfilter-erase)
 
 
 
@@ -169,6 +169,62 @@
 (global-set-key "\C-xw" 'jump-to-h-c-file)
 (global-set-key "\C-x," 'codepilot-previous-buffer)
 (global-set-key "\C-x." 'codepilot-forward-buffer)
+
+
+;; codepilot-ro-mode-map key mapping
+
+(define-key codepilot-ro-mode-map "s" 'cscope-find-this-symbol)
+(define-key codepilot-ro-mode-map "d" 'cscope-find-global-definition)
+(define-key codepilot-ro-mode-map "g" 'cplist-update)  ;; brian
+(define-key codepilot-ro-mode-map "G" 'cscope-find-global-definition-no-prompting)
+(define-key codepilot-ro-mode-map "c" 'cscope-find-functions-calling-this-function)
+(define-key codepilot-ro-mode-map "C" 'cscope-find-called-functions)
+(define-key codepilot-ro-mode-map "t" 'cscope-find-this-text-string)
+(define-key codepilot-ro-mode-map "e" 'cscope-find-egrep-pattern)
+;; (define-key codepilot-ro-mode-map "f" 'cscope-find-this-file)
+;; (define-key codepilot-ro-mode-map "i" 'cscope-find-files-including-file)
+(define-key codepilot-ro-mode-map "-" 'cp-pb-which-procs-i-in)
+(define-key codepilot-ro-mode-map "[" 'cp-pb-search-id-and-which-procs)
+(define-key codepilot-ro-mode-map "]" 'mycutil-cp-pb-where-we-are)
+(define-key codepilot-ro-mode-map [(f6)] 'mycutil-which-block)
+(define-key codepilot-ro-mode-map "/" 'codepilot-search-hi)
+;; (define-key codepilot-ro-mode-map "n" 'codepilot-search-hl-again-f)
+;; (define-key codepilot-ro-mode-map "N" 'codepilot-search-hl-again-b)
+;; (define-key codepilot-ro-mode-map "v" 'find-tag)
+(define-key codepilot-ro-mode-map "7" 'gtags-find-tag)
+(define-key codepilot-ro-mode-map "8" 'gtags-find-rtag)
+(define-key codepilot-ro-mode-map "9" 'gtags-find-symbol)
+(define-key codepilot-ro-mode-map "i" 'gtags-find-rtag)
+(define-key codepilot-ro-mode-map "o" 'gtags-find-symbol)
+(define-key codepilot-ro-mode-map "j" 'gtags-find-tag)
+(define-key codepilot-ro-mode-map "l" 'gtags-find-file)
+(define-key codepilot-ro-mode-map "p" 'gtags-find-with-grep)
+(define-key codepilot-ro-mode-map "h" 'mygtags-switch-to-gtags-buf)
+(define-key codepilot-ro-mode-map "`" 'cplist-minimize/restore-sidebar)
+(define-key codepilot-ro-mode-map "w" 'jump-to-h-c-file)
+(define-key codepilot-ro-mode-map "\M-j" 'semantic-complete-jump)
+(define-key codepilot-ro-mode-map "u" 'cptree-unfold-all)
+(define-key codepilot-ro-mode-map "v" (lambda ()
+                                        (interactive)
+                                        (cond ((eq major-mode 'gtags-select-mode)
+                                               (mygtags-toggle-folding))
+                                              (t
+                                               (hs-toggle-hiding)))))
+(define-key codepilot-ro-mode-map "a" 'ffap)
+(define-key codepilot-ro-mode-map ";" (lambda ()
+                                        (interactive)
+                                        (switch-to-buffer (other-buffer))
+                                        ))
+(define-key codepilot-ro-mode-map ":" 'goto-line)
+(define-key codepilot-ro-mode-map "r" 're)
+(define-key codepilot-ro-mode-map "R" 're-r)
+
+
+;; misc key mapping
+
+(define-key cplist-mode-map "v" 'cplist-toggle-folding)
+(define-key cplist-mode-map "z" 'cplist-fold-all)
+(define-key cplist-mode-map "o" 'cplist-unfold-all)
 
 
 ;; (brian-activate-codepilot-cc)

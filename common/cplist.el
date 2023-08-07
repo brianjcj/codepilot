@@ -98,14 +98,14 @@
    (list "^ +\\(.+?\\) \\(\\[.+?\\]\\)$"
          '(1 'cplist-item-face)
          '(2 'cplist-dir-face))
-   
+
    (list "^ +\\(.+\\)$"
          '(1 'cplist-item-face))
    (list "@ \\(.+\\)$"
          '(1 'cplist-head-face))
    (list "\\[.+?\\]"
          '(0 'link)))
-  
+
   "font-lock keywords setting for cpxref buffers.")
 
 
@@ -243,7 +243,7 @@
 
         ;; Call the hooks to fill the contents.
         (run-hooks 'cplist-fill-contents-hook)
-        
+
         (goto-char (point-min))
         (cpfilter-add-edit-entry-field)
         (setq win (get-buffer-window cplist-buf-name))
@@ -300,6 +300,16 @@
       (when (eq mm mode)
         (insert "  " (concat (buffer-name b) "\n")))))
   (insert "\n"))
+
+
+(defun cplist-buffer-list (mode)
+  (let (mm bl)
+    (dolist (b (buffer-list))
+      (setq mm (with-current-buffer b major-mode))
+      (when (eq mm mode)
+        (cl-pushnew (buffer-name b) bl)))
+    (reverse bl)))
+
 
 (defun cplist-sort-query-list-by-name ()
   ""
@@ -419,4 +429,3 @@
 
 
 (provide 'cplist)
-

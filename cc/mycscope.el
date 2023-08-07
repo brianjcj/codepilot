@@ -37,7 +37,7 @@
    (when m-list
      (setq m-list (sort m-list (lambda (a b)
                                  (>  (car a)  (car b)))))
-     
+
      (dolist (b1 m-list)
        (insert "  " (cdr b1) "\n"))))
   (setq cplist-query-sort-type 'create))
@@ -79,7 +79,7 @@
                        (dolist (o (overlays-at pos))
                          (cptree-delete-overlay o 'cptree)
                          (setq ret t))
-                            
+
                        (unless ret
                          (save-excursion
                            (end-of-line)
@@ -108,12 +108,12 @@
   (interactive "P\np")
   ;; (with-current-buffer
   ;;     (if (eq major-mode 'cscope-list-entry-mode) (current-buffer) (get-buffer "*cscope*"))
-  ;;  
+  ;;
   ;;   ;; serial number for sort by the create time.
   ;;   (make-local-variable 'cptree-serial-number)
   ;;   (setq cptree-serial-number cptree-serial-no-last)
   ;;   (setq cptree-serial-no-last (1+ cptree-serial-no-last))
-  ;;  
+  ;;
   ;;   (let (name
   ;;         b e killed)
   ;;     (save-excursion
@@ -123,7 +123,7 @@
   ;;       (end-of-line)
   ;;       (setq e (point))
   ;;       (setq name (buffer-substring-no-properties b e)))
-  ;;  
+  ;;
   ;;     ;;   symbol: Fprocess_send_string
   ;;     ;;   global definition: fprocess_send_string
   ;;     ;;   functions called by: STRING_INTERVALS
@@ -133,7 +133,7 @@
   ;;     ;;   symbol: STRING_INTERVALS
   ;;     ;;   egrep pattern: STRING_INTERVALS
   ;;     ;;   file: lisp.h
-  ;;  
+  ;;
   ;;     (cond ((string-match "^symbol" name)
   ;;            (setq name (replace-match "s" nil nil name)))
   ;;           ((string-match "^global definition" name)
@@ -154,9 +154,9 @@
   ;;     (when (get-buffer name)
   ;;       (kill-buffer name)
   ;;       (setq killed t))
-  ;;     
+  ;;
   ;;     (rename-buffer name (or unique-p (not interactive-p)))
-  ;;  
+  ;;
   ;;     (when (get-buffer-window cplist-buf-name)
   ;;       (with-current-buffer (get-buffer cplist-buf-name)
   ;;         (with-modify-in-readonly
@@ -170,10 +170,10 @@
   ;;          (goto-char (point-min))
   ;;          (forward-line 2)
   ;;          (insert "  " name "\n")
-  ;;          
+  ;;
   ;;          )))
   ;;     ))
-  
+
   )
 
 ;; (add-hook 'cscope-list-entry-hook 'cscope-rename-buffer)
@@ -252,7 +252,7 @@
 
 
 ;; deal with windows layout
-(defun cscope-show-entry-internal (file line-number 
+(defun cscope-show-entry-internal (file line-number
 					&optional save-mark-p window arrow-p)
   "Display the buffer corresponding to FILE and LINE-NUMBER
 in some window.  If optional argument WINDOW is given,
@@ -267,7 +267,7 @@ Returns the window displaying BUFFER."
     ;; brian
     (setq cscope-symbol-local (substring (buffer-name) 3))
     (setq old-buf (current-buffer))
-    
+
     (if (and (stringp file)
 	     (integerp line-number))
 	(progn
@@ -468,7 +468,7 @@ SENTINEL-FUNC are optional process filter and sentinel, respectively."
 
              ;; rename buffer
              (rename-buffer buf-name)
-             
+
              ;; serial number for sort by the create time.
              (make-local-variable 'cptree-serial-number)
              (setq cptree-serial-number cptree-serial-no-last)
@@ -478,17 +478,6 @@ SENTINEL-FUNC are optional process filter and sentinel, respectively."
 
              ;; update the [CScope Query List]
              (cplist-add-line-to-idlist "^@ CScope Query List  " (concat "  " buf-name "\n")))))))
-
-(define-key codepilot-ro-mode-map "s" 'cscope-find-this-symbol)
-(define-key codepilot-ro-mode-map "d" 'cscope-find-global-definition)
-(define-key codepilot-ro-mode-map "g" 'cplist-update)  ;; brian
-(define-key codepilot-ro-mode-map "G" 'cscope-find-global-definition-no-prompting)
-(define-key codepilot-ro-mode-map "c" 'cscope-find-functions-calling-this-function)
-(define-key codepilot-ro-mode-map "C" 'cscope-find-called-functions)
-(define-key codepilot-ro-mode-map "t" 'cscope-find-this-text-string)
-(define-key codepilot-ro-mode-map "e" 'cscope-find-egrep-pattern)
-;; (define-key codepilot-ro-mode-map "f" 'cscope-find-this-file)
-;; (define-key codepilot-ro-mode-map "i" 'cscope-find-files-including-file)
 
 
 (define-key cscope-list-entry-keymap [mouse-3] 'cscope-mouse-select-entry-other-window)
@@ -503,4 +492,3 @@ SENTINEL-FUNC are optional process filter and sentinel, respectively."
 (define-key cscope-list-entry-keymap "0" 'delete-window)
 
 (provide 'mycscope)
-
