@@ -375,7 +375,7 @@
               (or (not (get-text-property (point) 'cpimenu-target)) ;; no target
                   (let ((ol (overlays-at (point)))) ;; in overlay. invisible.
                     (and ol
-                         (some #'(lambda (o)
+                         (cl-some #'(lambda (o)
                                    (eq 'cpfilter (overlay-get o 'tag)))
                                ol)))))
     (forward-line))
@@ -419,7 +419,7 @@
 (defun cpimenu-show-buffer (buf)
   (cond ((get-buffer-window cpimenu-buf-name))
         (t
-         (multiple-value-bind (ret sidebar code-win bottom-win)
+         (cl-multiple-value-bind (ret sidebar code-win bottom-win)
              (codepilot-window-layout-wise)
            (cond (sidebar
                   (condition-case nil
@@ -444,7 +444,7 @@
                      (pop-to-buffer buf)
                      (shrink-window-if-larger-than-buffer (get-buffer-window cpimenu-buf-name)))))
                  (t
-                  (case ret
+                  (cl-case ret
                     ((:window-layout-1)
                      (split-window nil cplist-side-window-size t)
                      (switch-to-buffer buf)
@@ -716,7 +716,7 @@ If no function name is found, return nil."
 (define-key cpimenu-mode-map "f" 'codepilot-search-hl-again-f)
 (define-key cpimenu-mode-map "b" 'codepilot-search-hl-again-b)
 
-(define-key cpimenu-mode-map "g" '(lambda ()
+(define-key cpimenu-mode-map "g" (lambda ()
                                    (interactive)
                                    (goto-char (point-min))
                                    (cpfilter-erase)))
@@ -750,8 +750,8 @@ If no function name is found, return nil."
 
 ;; deal with desktop
 (require 'desktop)
-(pushnew 'cpimenu-show-with-cplist desktop-globals-to-save)
-(pushnew 'cpimenu-win-height desktop-globals-to-save)
+(cl-pushnew 'cpimenu-show-with-cplist desktop-globals-to-save)
+(cl-pushnew 'cpimenu-win-height desktop-globals-to-save)
 
 
 (provide 'cpimenu)

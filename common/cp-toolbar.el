@@ -187,7 +187,7 @@
   (setcdr tool-bar-map nil)
   (let (item)
     (dolist (i ll)
-      (setq item (find i codepilot-toolbar-item-list :key #'third))
+      (setq item (cl-find i codepilot-toolbar-item-list :key #'cl-third))
       (when item
         (apply 'tool-bar-add-item item)))))
 

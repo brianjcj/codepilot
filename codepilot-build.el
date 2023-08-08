@@ -16,8 +16,6 @@
                              ("xcscope.el"
                               "tabbar.el"
                               "gtags.el"
-                              "bm.el"
-                              "misccollect.el"
                               ))
 
                             ("common" .
@@ -40,7 +38,6 @@
                              (
                               "mycscope.el"
                               "mygtags.el"
-                              "myetags.el"
                               "myctagsmenu.el"
                               "mycutil.el"
                               "cp-cc.el"

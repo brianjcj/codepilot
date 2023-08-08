@@ -507,9 +507,9 @@
     (cpimenu-output buf-name ilist nil)
 
     (cond ((get-buffer-window "*MyCtagsMenu*"))
-          (t (multiple-value-bind (ret sidebar code-win bottom-win)
+          (t (cl-multiple-value-bind (ret sidebar code-win bottom-win)
                  (codepilot-window-layout-wise)
-               (case ret
+               (cl-case ret
                  ((:window-layout-1&1)
                   (condition-case nil
                       (progn

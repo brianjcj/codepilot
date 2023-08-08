@@ -307,8 +307,19 @@
     (dolist (b (buffer-list))
       (setq mm (with-current-buffer b major-mode))
       (when (eq mm mode)
-        (cl-pushnew (buffer-name b) bl)))
+        (push (buffer-name b) bl)))
     (reverse bl)))
+
+
+;; sort by buffer local variable
+(defun cplist-buffer-list-sort (mode buffer-local-var-symbol)
+  (let (bl)
+    (dolist (b (buffer-list))
+      (with-current-buffer b
+        (when (eq major-mode mode)
+          (push (cons (symbol-value buffer-local-var-symbol) b) bl))))
+    (mapcar (lambda (x) (buffer-name (cdr x)))
+            (sort bl (lambda (a b) (> (car a) (car b)))))))
 
 
 (defun cplist-sort-query-list-by-name ()

@@ -147,7 +147,7 @@ See `hs-hide-block' and `hs-show-block'."
   (interactive)
   (let ((o-list (overlays-at (point))))
     (cond ((and o-list
-                (some #'(lambda (o)
+                (cl-some #'(lambda (o)
                           (eq (overlay-get o 'hide-ifdef) t)
                           )
                       o-list

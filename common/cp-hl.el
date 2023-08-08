@@ -31,8 +31,7 @@
 (defun codepilot-highlight-2 (buf)
   (let ((codepilot-mark-tag 'codepilot-highlight-2))
     (condition-case nil
-        (save-excursion
-          (set-buffer buf)
+        (with-current-buffer buf
           (when codepilot-hl-text-overlay
             (overlay-put codepilot-hl-text-overlay 'face 'codepilot-hl-text-face)
             (overlay-put codepilot-hl-text-overlay 'priority 1001))
@@ -60,8 +59,7 @@
 (defun codepilot-highlight-3 (text type buf)
   (let ((codepilot-mark-tag 'codepilot-highlight-3)
         (codepilot-mark-face-var 'highlight))
-    (save-excursion
-      (set-buffer buf)
+    (with-current-buffer buf
       (save-excursion
         (save-match-data
           (save-restriction

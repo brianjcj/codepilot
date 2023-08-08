@@ -89,8 +89,8 @@
                   (setq append-msg (concat append-msg "; " callstat))
                 (setq append-msg callstat)))
           (push (list :-> m msg append-msg snode dnode (if callplot-display-help-echo (concat ts "\n" callstat) nil)) msg-list)
-          (pushnew snode node-list :test #'string=)
-          (pushnew dnode node-list :test #'string=))))
+          (cl-pushnew snode node-list :test #'string=)
+          (cl-pushnew dnode node-list :test #'string=))))
     (when msg-list
       (setq msg-list (nreverse msg-list)))
     (setq node-list (arrange-nodes node-list))
@@ -194,13 +194,13 @@
 
 (defun draw-plot-asu ()
   (cond ((asu-file-p)
-         (multiple-value-bind (msg-list node-list) (parse-msgs (get-msg-pos-list))
+         (cl-multiple-value-bind (msg-list node-list) (parse-msgs (get-msg-pos-list))
            (draw-plot-1 msg-list node-list node-list #'draw-nodes))
          t)
         (t nil)))
 
 (defun draw-plot-script ()
-  (multiple-value-bind (msg-list guy-list option-alist) (parse-callplot-script)
+  (cl-multiple-value-bind (msg-list guy-list option-alist) (parse-callplot-script)
       (let ((callplot-display-msgid callplot-display-msgid)
             (callplot-padded-line callplot-padded-line)
             (callplot-column-width callplot-column-width)
@@ -225,7 +225,7 @@
                             (setq callplot-note-numbering t))
                            ((string= "off" opt-val)
                             (setq callplot-note-numbering nil))))))
-        (multiple-value-bind (g1 g2)
+        (cl-multiple-value-bind (g1 g2)
             (loop for (a . b) in guy-list collect a into l1 collect b into l2
                   finally (return (values l1 l2)))
           (draw-plot-1 msg-list g1 g2 #'draw-nodes-mult))))
@@ -453,7 +453,7 @@
 (defun asu-to-callplot-script ()
   ""
   (interactive)
-  (multiple-value-bind (msg-list node-list) (parse-msgs (get-msg-pos-list))
+  (cl-multiple-value-bind (msg-list node-list) (parse-msgs (get-msg-pos-list))
     (with-output-to-temp-buffer (concat "*CallPlot Script-" (buffer-name) "*")
       (save-excursion
         (set-buffer standard-output)
@@ -534,8 +534,8 @@
                  (setq msg "Unknown msg")))
           
           (push (list :-> m msg nil snode dnode nil) msg-list)
-          (pushnew snode node-list :test #'string=)
-          (pushnew dnode node-list :test #'string=)
+          (cl-pushnew snode node-list :test #'string=)
+          (cl-pushnew dnode node-list :test #'string=)
 
           (setq limit (marker-position m)))))
     (when msg-list
@@ -553,7 +553,7 @@
 
 (defun draw-plot-ss7 ()
   (cond ((ss7-file-p)
-         (multiple-value-bind (msg-list node-list) (parse-msgs-ss7 (get-msg-pos-list-ss7))
+         (cl-multiple-value-bind (msg-list node-list) (parse-msgs-ss7 (get-msg-pos-list-ss7))
            (draw-plot-1 msg-list node-list node-list #'draw-nodes))
          t)
         (t nil)))

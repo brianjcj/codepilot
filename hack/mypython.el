@@ -1,11 +1,11 @@
 
 (require 'python)
 
-(defun python-which-func ()
-  (cpimenu-which-func)
-  (let ((function-name (python-current-defun python-which-func-length-limit)))
-    (set-text-properties 0 (length function-name) nil function-name)
-    function-name))
+;; (defun python-which-func ()
+;;   (cpimenu-which-func)
+;;   (let ((function-name (python-current-defun python-which-func-length-limit)))
+;;     (set-text-properties 0 (length function-name) nil function-name)
+;;     function-name))
 
 ;; only one line is modified. search brian
 (defun python-imenu-create-index ()
@@ -34,7 +34,7 @@ precede it)."
 		(or (group "def") (group "class"))	   ; type
 		(1+ space) (group (1+ (or word ?_))))	   ; name
 	    nil t)
-      (unless (python-in-string/comment)
+      (unless (python-syntax-comment-or-string-p)
 	(let ((pos (match-beginning 0))
 	      (name (match-string-no-properties 3)))
 	  (if (match-beginning 2)	; def or class?
@@ -56,7 +56,7 @@ precede it)."
 	(while (re-search-forward
 		(rx line-start (group (1+ (or word ?_))) (0+ space) "=")
 		nil t)
-	  (unless (python-in-string/comment)
+	  (unless (python-syntax-comment-or-string-p)
 	    (push (cons (match-string 1) (match-beginning 1))
 		  vars)))
 	(setq index-alist (nreverse index-alist))
@@ -71,20 +71,20 @@ precede it)."
   "fold the block"
   (interactive)
   (let (ret b e)
-    (dolist (o (overlays-at (if (python-open-block-statement-p)
+    (dolist (o (overlays-at (if (python-info-statement-starts-block-p)
                                 (save-excursion
-                                  (python-end-of-statement)
+                                  (python-nav-end-of-statement)
                                   (point))
                                 (point))))
       (when (cptree-delete-overlay o 'cptree)
         (setq ret t)))
     (unless ret
       (save-excursion
-        (unless (python-open-block-statement-p)
-          (python-beginning-of-block))
-        (python-end-of-statement)
+        (unless (python-info-statement-starts-block-p)
+          (python-nav-beginning-of-block))
+        (python-nav-end-of-statement)
         (setq b (point))
-        (python-end-of-block)
+        (python-nav-end-of-block)
         (setq e (1- (point)))
         (cptree-hide-region b e 'cptree)))))
 

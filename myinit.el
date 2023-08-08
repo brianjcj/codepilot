@@ -39,7 +39,7 @@
 (which-function-mode t)
 
 
-(pushnew 'nxml-mode codepilot-cc-major-modes)
+(cl-pushnew 'nxml-mode codepilot-cc-major-modes)
 
 ;; ;; ====================
 ;; ;; undo and redo

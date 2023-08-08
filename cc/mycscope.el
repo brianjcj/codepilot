@@ -277,7 +277,7 @@ Returns the window displaying BUFFER."
 	  (if (windowp window)
 	      (set-window-buffer window buffer)
 	    ;; (setq window (display-buffer buffer))
-            (multiple-value-bind (ret sidebar code-win bottom-win)
+            (cl-multiple-value-bind (ret sidebar code-win bottom-win)
                 (codepilot-window-layout-wise)
 
               ;;                 (save-selected-window
@@ -291,7 +291,7 @@ Returns the window displaying BUFFER."
                        (select-window code-win))
                      (switch-to-buffer buffer))
                     (t
-                     (case ret
+                     (cl-case ret
                        ((:window-layout-1 :window-layout-1&1)
                         (split-window-vertically)
                         (switch-to-buffer buffer)
@@ -430,8 +430,7 @@ SENTINEL-FUNC are optional process filter and sentinel, respectively."
                  ;; was launched from.
                  (setq cscope-marker-window (get-buffer-window old-buffer))
                  (setq cscope-marker (point-marker))))
-             (save-excursion
-               (set-buffer outbuf)
+             (with-current-buffer outbuf
                (if cscope-display-times
                    (let ( (times (current-time)) )
                      (setq cscope-start-time (+ (* (car times) 65536.0) (car (cdr times))

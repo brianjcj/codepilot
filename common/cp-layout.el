@@ -96,9 +96,9 @@
   (cond ((get-buffer-window-list buffer))
         (t
          (save-excursion
-           (multiple-value-bind (ret sidebar code-win bottom-win num)
+           (cl-multiple-value-bind (ret sidebar code-win bottom-win num)
                (codepilot-window-layout-wise)
-             (case ret
+             (cl-case ret
                ((:window-layout-1&1)
                 (cond ((window-dedicated-p (selected-window))
                        (select-window code-win)))
@@ -171,9 +171,9 @@
        (defadvice pop-to-buffer (before codepilot-windown-layout
                                         (buffer &optional action norecord))
          (save-excursion
-           (multiple-value-bind (ret sidebar code-win bottom-win)
+           (cl-multiple-value-bind (ret sidebar code-win bottom-win)
                (codepilot-window-layout-wise)
-             (case ret
+             (cl-case ret
                ((:window-layout-1&1)
                 (cond ((window-dedicated-p (selected-window))
                        (select-window code-win))))))))
@@ -188,9 +188,9 @@
        (defadvice pop-to-buffer (before codepilot-windown-layout
                                         (buffer &optional other-window norecord))
          (save-excursion
-           (multiple-value-bind (ret sidebar code-win bottom-win)
+           (cl-multiple-value-bind (ret sidebar code-win bottom-win)
                (codepilot-window-layout-wise)
-             (case ret
+             (cl-case ret
                ((:window-layout-1&1)
                 (cond ((window-dedicated-p (selected-window))
                        (select-window code-win))))))))
@@ -204,9 +204,9 @@
 
 (defadvice delete-window (around codepilot-windown-layout
                                 (&optional window))
-  (multiple-value-bind (ret sidebar code-win bottom-win)
+  (cl-multiple-value-bind (ret sidebar code-win bottom-win)
       (codepilot-window-layout-wise)
-    (case ret
+    (cl-case ret
       ((:window-layout-1&1)
        (cond ((eq code-win (if window window (selected-window))))
              (t

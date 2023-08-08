@@ -53,7 +53,7 @@
       (goto-char rstart)
       (while (and (not (eobp))
                   (< (point) rend))
-        (pushnew (buffer-substring-no-properties (line-beginning-position) (line-end-position))
+        (cl-pushnew (buffer-substring-no-properties (line-beginning-position) (line-end-position))
                  ll
                  :test #'string=)
         (forward-line))

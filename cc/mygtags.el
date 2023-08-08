@@ -475,7 +475,7 @@ Turning on Gtags-Select mode calls the value of the variable
           (forward-char -1))
         (forward-char 1))
        (t
-        (while (looking-at "[ \t\n]")
+        (while (looking-at "[ \t\n([<]")
           (forward-char -1))
         (while (looking-at "[0-9A-Za-z_]")
           (forward-char -1))
@@ -511,10 +511,10 @@ Turning on Gtags-Select mode calls the value of the variable
 (defvar mygtags-auto-show-only-on? nil)
 
 (require 'desktop)
-(pushnew 'mygtags-auto-flush-regexp desktop-globals-to-save)
-(pushnew 'mygtags-auto-flush-on? desktop-globals-to-save)
-(pushnew 'mygtags-auto-show-only-regexp desktop-globals-to-save)
-(pushnew 'mygtags-auto-show-only-on? desktop-globals-to-save)
+(cl-pushnew 'mygtags-auto-flush-regexp desktop-globals-to-save)
+(cl-pushnew 'mygtags-auto-flush-on? desktop-globals-to-save)
+(cl-pushnew 'mygtags-auto-show-only-regexp desktop-globals-to-save)
+(cl-pushnew 'mygtags-auto-show-only-on? desktop-globals-to-save)
 
 
 (defun mygtags-show-all ()
@@ -634,8 +634,9 @@ Turning on Gtags-Select mode calls the value of the variable
 (defun mygtags-switch-to-gtags-buf ()
   (interactive)
   (let (input cands)
-    (setq cands (cplist-buffer-list 'gtags-select-mode))
-    (setq input (completing-read "Gtags Buffer: " cands nil t))
+    (setq cands (cplist-buffer-list-sort 'gtags-select-mode 'cptree-serial-number))
+    ;; (setq input (completing-read "Gtags Buffer: " cands nil t))  ; hard to turn off sort
+    (setq input (consult--read cands :prompt "Gtags Buffer: " :sort nil))
     (codepilot-pop-or-switch-buffer input)))
 
 
@@ -730,8 +731,8 @@ Turning on Gtags-Select mode calls the value of the variable
 (add-hook 'gtags-select-mode-hook (lambda()(interactive)(codepilot-ro-mode 1)))
 
 ;; (require 'desktop)
-;; (pushnew 'find-gtag-history desktop-globals-to-save)
-;; (pushnew 'find-tag-history desktop-globals-to-save)
+;; (cl-pushnew 'find-gtag-history desktop-globals-to-save)
+;; (cl-pushnew 'find-tag-history desktop-globals-to-save)
 
 
 

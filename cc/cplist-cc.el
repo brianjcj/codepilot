@@ -21,7 +21,7 @@
 (require 'cp-cc)
 (require 'mycscope)
 (require 'mygtags)
-(require 'myetags)
+
 
 (defun cplist-update-buffer-list ()
   ;; (message "find file hook hit")
@@ -144,8 +144,8 @@
 (defun tag-delete-in-tag-history (str)
   (let (tagname ind ltail)
     (cond ((eq ?= (aref str 0))
-           (setq tagname (subseq str 2))
-           (setq ind (position tagname find-gtag-history :test #'string=))
+           (setq tagname (cl-subseq str 2))
+           (setq ind (cl-position tagname find-gtag-history :test #'string=))
            (cond ((null ind))
                  ((= ind 0)
                   (pop find-gtag-history))
@@ -154,8 +154,8 @@
                   (setcdr ltail (cdr (cdr ltail)))))
            )
           ((eq ?> (aref str 0))
-           (setq tagname (subseq str 2))
-           (setq ind (position tagname find-tag-history :test #'string=))
+           (setq tagname (cl-subseq str 2))
+           (setq ind (cl-position tagname find-tag-history :test #'string=))
            (cond ((null ind))
                  ((= ind 0)
                   (pop find-tag-history))
@@ -171,7 +171,7 @@
                   (looking-at "^\\[")
                   (let ((ol (overlays-at (point)))) ;; in overlay. invisible.
                     (and ol
-                         (some #'(lambda (o)
+                         (cl-some #'(lambda (o)
                                    (eq 'cpfilter (overlay-get o 'tag)))
                                ol)))))
     (forward-line))

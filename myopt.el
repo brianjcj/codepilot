@@ -724,7 +724,7 @@
   )
 
 
-(pushnew 'php-mode codepilot-cc-major-modes)
+(cl-pushnew 'php-mode codepilot-cc-major-modes)
 
 
 

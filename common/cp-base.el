@@ -79,7 +79,7 @@ not really placed in the text, it is just shown in the overlay"
     (dotimes (i (length str))
       (unless (eq ?\s (aref str i))
         (setq ret nil)
-        (return)))
+        (cl-return)))
     ret))
 
 (defun codepilot-trim (s)
@@ -93,7 +93,7 @@ not really placed in the text, it is just shown in the overlay"
 
 (defun codepilot-pop-or-switch-buffer (buf &optional type)
   ""
-  (multiple-value-bind (ret sidebar code-win bottom-win)
+  (cl-multiple-value-bind (ret sidebar code-win bottom-win)
       (codepilot-window-layout-wise)
 
     (when (and code-win (not (eq type :cpimenu)))
@@ -102,9 +102,9 @@ not really placed in the text, it is just shown in the overlay"
     (unless inhibit-codepilot-pre-pop-or-switch-buffer-hook
       (run-hooks 'codepilot-pre-pop-or-switch-buffer-hook))
 
-    (case ret
+    (cl-case ret
       ((:window-layout-1)
-       (case type
+       (cl-case type
          ((:xref-to-listing)
           (pop-to-buffer buf))
          ((:cpnote-click-link)
@@ -113,7 +113,7 @@ not really placed in the text, it is just shown in the overlay"
          (otherwise
           (switch-to-buffer buf))))
       ((:window-layout-1&1)
-       (case type
+       (cl-case type
          ((:cpnote-click-link)
           (select-window code-win)
           (split-window-vertically)
@@ -131,7 +131,7 @@ not really placed in the text, it is just shown in the overlay"
               (switch-to-buffer buf)))
        (switch-to-buffer buf))
       (otherwise
-       (case type
+       (cl-case type
          ((:xref-to-listing)
           (pop-to-buffer buf))
          ((:cpnote-click-link)
@@ -148,9 +148,9 @@ not really placed in the text, it is just shown in the overlay"
     (if buf-cur-win
         (select-window buf-cur-win)
       ;; else
-      (multiple-value-bind (ret sidebar code-win bottom-win)
+      (cl-multiple-value-bind (ret sidebar code-win bottom-win)
           (codepilot-window-layout-wise)
-        (case ret
+        (cl-case ret
           ((:window-layout-1)
            (when (get-buffer cplist-buf-name)
              (kill-buffer cplist-buf-name))
@@ -406,7 +406,7 @@ overlay on the hide-region-overlays \"ring\""
 
 ;; deal with desktop
 (require 'desktop)
-(pushnew 'cplist-side-window-size desktop-globals-to-save)
+(cl-pushnew 'cplist-side-window-size desktop-globals-to-save)
 
 (provide 'cp-base)
 

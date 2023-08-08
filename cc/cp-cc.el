@@ -82,7 +82,7 @@ showed in the codepilot sidebar."
        ;;    (save-excursion
        ;;      (goto-char (match-end 0))
        ;;      (setq tag (buffer-substring-no-properties (point) (progn (end-of-line) (point))))
-       ;;      (multiple-value-bind (ret sidebar code-win bottom-win)
+       ;;      (cl-multiple-value-bind (ret sidebar code-win bottom-win)
        ;;          (codepilot-window-layout-wise)
        ;;        (when code-win
        ;;          (select-window code-win)))
@@ -93,7 +93,7 @@ showed in the codepilot sidebar."
        ;;    (save-excursion
        ;;      (goto-char (match-end 0))
        ;;      (setq tag (buffer-substring-no-properties (point) (progn (end-of-line) (point))))
-       ;;      (multiple-value-bind (ret sidebar code-win bottom-win)
+       ;;      (cl-multiple-value-bind (ret sidebar code-win bottom-win)
        ;;          (codepilot-window-layout-wise)
        ;;        (when code-win
        ;;          (select-window code-win)))
@@ -104,14 +104,14 @@ showed in the codepilot sidebar."
         (setq cw (downcase (current-word)))
         (if (string= cw "speedbar")
             (progn
-              (multiple-value-bind (ret sidebar code-win bottom-win)
+              (cl-multiple-value-bind (ret sidebar code-win bottom-win)
                   (codepilot-window-layout-wise)
-                (case ret
+                (cl-case ret
                   ((:window-layout-1))
                   ((:window-layout-1&1
                     :window-layout-1&2+)
                    (select-window code-win))))
-              (speedbar-disable-update)
+              ;; (speedbar-disable-update)
               (speedbar 1))
           (setq cplist-type (intern cw))
           (cplist-update)))
@@ -119,9 +119,9 @@ showed in the codepilot sidebar."
         (setq buf-name (match-string 1))
         (when (get-buffer buf-name)
 
-          (multiple-value-bind (ret sidebar code-win bottom-win)
+          (cl-multiple-value-bind (ret sidebar code-win bottom-win)
               (codepilot-window-layout-wise)
-            (case ret
+            (cl-case ret
               ((:window-layout-1))
               ((:window-layout-1&1
                 :window-layout-1&2+)

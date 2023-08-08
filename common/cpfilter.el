@@ -105,7 +105,7 @@
                                 (forward-line 0)
                                 (unless (search-forward s1 (line-end-position) t)
                                   (setq not-match t)
-                                  (return)))
+                                  (cl-return)))
                               (unless not-match
                                 (remove-overlays (line-beginning-position) (line-beginning-position 2)
                                                  'tag 'cpfilter))
@@ -186,7 +186,7 @@
   (forward-line)
   (command-execute "\t"))
 
-(loop for i from 32 to 126 do
+(cl-loop for i from 32 to 126 do
      (define-key cpfilter-keymap (vector i) 'cpfilter-self-insert-command))
 
 ;; (define-key cpfilter-keymap "\r" 'cpfilter-erase)

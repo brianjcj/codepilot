@@ -104,7 +104,7 @@
   ""
   (interactive)
 
-  (multiple-value-bind (ret sidebar code-win bottom-win)
+  (cl-multiple-value-bind (ret sidebar code-win bottom-win)
       (codepilot-window-layout-wise)
     (when code-win
       (select-window code-win)))

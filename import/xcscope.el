@@ -568,9 +568,9 @@ creation, updating, and maintenance."
   "*List to force directory-to-cscope-database mappings.
 This is a list of `(REGEXP DBLIST [ DBLIST ... ])', where:
 
-REGEXP is a regular expression matched against the current buffer's
+REGEXP is a regular expression matched against the current buffer\='s
 current directory.  The current buffer is typically some source file,
-and you're probably searching for some symbol in or related to this
+and you\='re probably searching for some symbol in or related to this
 file.  Basically, this regexp is used to relate the current directory
 to a cscope database.  You need to start REGEXP with \"^\" if you want
 to match from the beginning of the current directory.
@@ -617,7 +617,7 @@ mapping.
 This module searches for the cscope databases by first using this
 variable; if a database location cannot be found using this variable,
 then the current directory is searched, then the parent, then the
-parent's parent, until a cscope database directory is found, or the
+parent\='s parent, until a cscope database directory is found, or the
 root directory is reached.  If the root directory is reached, the
 current directory will be used.
 
@@ -634,7 +634,7 @@ databases that are named differently than that given by
 Here is an example of `cscope-database-regexps':
 
         (setq cscope-database-regexps
-              '(
+              \='(
                 ( \"^/users/jdoe/sources/proj1\"
                   ( t )
                   ( \"/users/jdoe/sources/proj2\")
@@ -648,7 +648,7 @@ Here is an example of `cscope-database-regexps':
                   )
                 ))
 
-If the current buffer's directory matches the regexp,
+If the current buffer\='s directory matches the regexp,
 \"^/users/jdoe/sources/proj1\", then the following search will be
 done:
 
@@ -668,7 +668,7 @@ done:
        \"/some/master/directory\", and the command-line options \"-d\"
        and \"-I/usr/local/include\" will be passed to cscope.
 
-If the current buffer's directory matches the regexp,
+If the current buffer\='s directory matches the regexp,
 \"^/users/jdoe/sources/gnome\", then the following search will be
 done:
 
@@ -676,7 +676,7 @@ done:
     \"/master/gnome/database\".  The \"-d\" option will be passed to
     cscope.
 
-If the current buffer's directory does not match any of the above
+If the current buffer\='s directory does not match any of the above
 regexps, then only the normal hierarchical database search will be
 done.
 
@@ -786,7 +786,9 @@ or a file."
 
 
 (defcustom cscope-suppress-empty-matches t
-  "*If non-nil, delete empty matches.")
+  "*If non-nil, delete empty matches."
+  :type 'boolean
+  :group 'cscope)
 
 
 (defcustom cscope-indexing-script "cscope-indexer"
@@ -1304,7 +1306,8 @@ Returns the window displaying BUFFER."
 	  (if (> line-number 0)
 	      (progn
 		(setq old-pos (point))
-		(goto-line line-number)
+		;; (goto-line line-number)
+        (forward-line line-number) ;; TODO(brianjcj): check
 		(setq old-point (point))
 		(if (and cscope-adjust cscope-adjust-range)
 		    (progn
@@ -1864,8 +1867,8 @@ using the mouse."
 				    elapsed-time))
 		    ))
 	      (setq cscope-process nil)
-	      (if cscope-running-in-xemacs
-		  (setq modeline-process ": Search complete"))
+	      ;; (if cscope-running-in-xemacs
+		  ;; (setq modeline-process ": Search complete")
 	      (if cscope-start-directory
 		  (setq default-directory cscope-start-directory))
 	      (if (not cscope-first-match)
@@ -1993,9 +1996,9 @@ using the mouse."
 	      (set-process-filter cscope-process cscope-filter-func)
 	      (set-process-sentinel cscope-process cscope-sentinel-func)
 	      (set-marker (process-mark cscope-process) (point))
-	      (process-kill-without-query cscope-process)
-	      (if cscope-running-in-xemacs
-		  (setq modeline-process ": Searching ..."))
+	      ;; (process-kill-without-query cscope-process)  ;; TODO(brianjcj): check
+	      ;; (if cscope-running-in-xemacs
+		  ;; (setq modeline-process ": Searching ..."))
 	      (setq buffer-read-only t)
 	      )
 	  (apply 'call-process cscope-program nil outbuf t options)
@@ -2032,8 +2035,7 @@ SENTINEL-FUNC are optional process filter and sentinel, respectively."
 	  ;; was launched from.
 	  (setq cscope-marker-window (get-buffer-window old-buffer))
 	(setq cscope-marker (point-marker))))
-    (save-excursion
-      (set-buffer outbuf)
+    (with-current-buffer outbuf
       (if cscope-display-times
 	  (let ( (times (current-time)) )
 	    (setq cscope-start-time (+ (* (car times) 65536.0) (car (cdr times))
@@ -2126,7 +2128,7 @@ SENTINEL-FUNC are optional process filter and sentinel, respectively."
 		   cscope-indexing-script args))
       (set-process-sentinel cscope-unix-index-process
 			    'cscope-unix-index-files-sentinel)
-      (process-kill-without-query cscope-unix-index-process)
+      ;; (process-kill-without-query cscope-unix-index-process)  ;; TODO(brianjcj):
       )
     ))
 
@@ -2194,8 +2196,7 @@ cscope.out file was found without a corresponding cscope.files file."
 	  )
       (let ( (outbuf (get-buffer-create cscope-info-buffer-name)) )
 	(display-buffer outbuf)
-	(save-excursion
-	  (set-buffer outbuf)
+	(with-current-buffer outbuf
 	  (buffer-disable-undo)
 	  (erase-buffer)
 	  (insert "Cscope search directories:\n")
@@ -2291,9 +2292,11 @@ file."
     (if (or (not sym)
 	    (string= sym "")
 	    (not (and cscope-running-in-xemacs
-		      cscope-no-mouse-prompts current-mouse-event
-		      (or (mouse-event-p current-mouse-event)
-			  (misc-user-event-p current-mouse-event))))
+		      cscope-no-mouse-prompts ;; current-mouse-event
+		      ;; (or (mouse-event-p current-mouse-event)
+			      ;; (misc-user-event-p current-mouse-event)
+                  ;; )
+              ))
 	    ;; Always prompt for symbol in dired mode.
 	    (eq major-mode 'dired-mode)
 	    )
@@ -2438,7 +2441,7 @@ file."
     (setq cscope-minor-mode (if (null arg) t (car arg)))
     (if cscope-minor-mode
 	(progn
-	  (easy-menu-add cscope:menu cscope:map)
+	  ;; (easy-menu-add cscope:menu cscope:map) ;; TODO(brianjcj)
 	  (run-hooks 'cscope-minor-mode-hooks)
 	  ))
     cscope-minor-mode

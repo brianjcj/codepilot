@@ -11,10 +11,10 @@
 (add-to-list 'load-path (expand-file-name "import" codepilot-dir))
 
 (add-to-list 'exec-path (expand-file-name "bin" codepilot-dir))
-  
+
 
 (load (concat codepilot-dir "misc/mymisc.elc"))
-(load (concat codepilot-dir "import/misccollect.elc"))
+
 
 (require 'cp-layout)
 (require 'cp-toolbar)
@@ -41,22 +41,22 @@
 (require 'mypython)
 (require 'cp-cc)
 (require 'mysemantic)
- 
+
 
 
 ;; VS and UtraEdit style bookmark:
-(require 'bm)
+;; (require 'bm)
 
-(global-set-key (kbd "<C-f2>") 'bm-toggle)
-(global-set-key (kbd "<f2>")   'bm-next)
-(global-set-key (kbd "<M-f2>") 'bm-previous)
-(global-set-key (kbd "<S-f2>") 'bm-show)
+;; (global-set-key (kbd "<C-f2>") 'bm-toggle)
+;; (global-set-key (kbd "<f2>")   'bm-next)
+;; (global-set-key (kbd "<M-f2>") 'bm-previous)
+;; (global-set-key (kbd "<S-f2>") 'bm-show)
 
-(define-key bm-show-mode-map [mouse-3] (lambda (e)
-                                         (interactive "e")
-                                         (mouse-set-point e)
-                                         (bm-show-goto-bookmark)
-                                         ))
+;; (define-key bm-show-mode-map [mouse-3] (lambda (e)
+;;                                          (interactive "e")
+;;                                          (mouse-set-point e)
+;;                                          (bm-show-goto-bookmark)
+;;                                          ))
 
 ;; cscope
 ;; ===============================
@@ -110,7 +110,7 @@
 
 (require 'which-func)
 (when (listp which-func-modes)
-  (pushnew 'objc-mode which-func-modes))
+  (cl-pushnew 'objc-mode which-func-modes))
 
 (require 'cplist-cc)
 (add-hook 'find-file-hook 'cplist-update-buffer-list)
@@ -141,22 +141,6 @@
   (codepilot-toolbar-deactivate)
   (cpimenu-activate)
   )
-
-
-;; VS style bookmark:
-
-(require 'bm)
-
-(global-set-key (kbd "<C-f2>") 'bm-toggle)
-(global-set-key (kbd "<f2>")   'bm-next)
-(global-set-key (kbd "<M-f2>") 'bm-previous)
-(global-set-key (kbd "<S-f2>") 'bm-show)
-
-(define-key bm-show-mode-map [mouse-3] (lambda (e)
-                                         (interactive "e")
-                                         (mouse-set-point e)
-                                         (bm-show-goto-bookmark)
-                                         ))
 
 (face-spec-set 'bm-face '((((class color)
                             (background light))
@@ -218,6 +202,7 @@
 (define-key codepilot-ro-mode-map ":" 'goto-line)
 (define-key codepilot-ro-mode-map "r" 're)
 (define-key codepilot-ro-mode-map "R" 're-r)
+(define-key codepilot-ro-mode-map "m" 'cpimenu-go)
 
 
 ;; misc key mapping

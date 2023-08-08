@@ -26,9 +26,9 @@
 (defvar cp-pb-buffer-search-text nil)
 (defvar cp-pb-buffer-search-type nil)
 
-(pushnew "*Which Procs*" codepilot-buffer-to-bury)
-(pushnew "*Block Traceback*" codepilot-buffer-to-bury)
-(pushnew "*Proc Outline*" codepilot-buffer-to-bury)
+(cl-pushnew "*Which Procs*" codepilot-buffer-to-bury)
+(cl-pushnew "*Block Traceback*" codepilot-buffer-to-bury)
+(cl-pushnew "*Proc Outline*" codepilot-buffer-to-bury)
 
 
 (defun cp-pb-fold/unfold ()
@@ -72,9 +72,9 @@
                 cp-pb-buffer-file-name
                 (setq buf (find-file-noselect cp-pb-buffer-file-name)))
            (setq my-buf (current-buffer))
-           (multiple-value-bind (ret sidebar code-win bottom-win num)
+           (cl-multiple-value-bind (ret sidebar code-win bottom-win num)
                (codepilot-window-layout-wise)
-             (case ret
+             (cl-case ret
                ((:window-layout-1&1
                  :window-layout-1)
                 (select-window code-win)
@@ -136,7 +136,7 @@
 
 (defun cp-pb-pop-to-buffer (buf)
   (let (win)
-    (multiple-value-bind (ret sidebar code-win bottom-win num)
+    (cl-multiple-value-bind (ret sidebar code-win bottom-win num)
         (codepilot-window-layout-wise)
       (cond ((null num)
              (pop-to-buffer buf)
@@ -146,7 +146,7 @@
              (when (= num 2)
                (fit-window-to-buffer (get-buffer-window buf) (/ (frame-height) 2) 10)))
             (t
-             (case ret
+             (cl-case ret
                ((:window-layout-1&1)
                 (cond ((window-dedicated-p (selected-window))
                        (select-window code-win)))
@@ -217,7 +217,7 @@
 (defun cp-pb-blocktrace-and-procs-layout ()
   (interactive)
   (progn ;; when (eq major-mode 'protel-mode)
-    (multiple-value-bind (ret sidebar code-win bottom-win num)
+    (cl-multiple-value-bind (ret sidebar code-win bottom-win num)
         (codepilot-window-layout-wise)
       (cond ((eq ret :window-layout-1)
              (setq code-win (selected-window)))
