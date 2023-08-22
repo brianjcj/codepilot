@@ -179,4 +179,39 @@
     (ring-remove codepilot-marker-ring 0)))
 
 
+(defun codepilot-nav-history ()
+  (interactive)
+  (let (cands item)
+    (setq cands
+          (mapcar (lambda (x)
+                    (let (buf line line-number)
+                      (setq buf (get-buffer (car x)))
+                      (if buf
+                          (with-current-buffer buf
+                            (goto-char (nth 1 x))
+                            (setq line-number (line-number-at-pos (point) t))
+                            ;; (setq line (thing-at-point 'line))
+                            (save-restriction
+                              (widen)
+                              (setq line (buffer-substring (line-beginning-position) (line-end-position))))
+                            (cons (format "%-50s|%s" (format "%s:%d" (car x) line-number) line) x)))))
+                  (append
+                   (ring-elements codepilot-marker-ring)
+                   (reverse (ring-elements codepilot-forward-marker-ring)))))
+    (setq cands (cl-remove-if #'null cands))
+    (setq cands (cl-delete-duplicates cands :key #'car :test #'string=))
+    (setq item (consult--read
+                cands :sort nil :require-match t
+                :prompt "codepilot history: "
+                :state (consult--jump-state)
+                :lookup (lambda (selected candidates input &rest _)
+                          (when-let (found (cl-member selected candidates :key #'car :test #'string=))
+                            (let ((info (cdr (car found))))
+                              (set-marker (make-marker) (nth 1 info) (get-buffer (car info))))))))
+    ;; (codepilot-switch-to-buffer (get-buffer (car item)))
+    ;; (goto-char (nth 1 item))
+    ))
+
+
+
 (provide 'cphistory)

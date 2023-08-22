@@ -39,8 +39,6 @@
 (which-function-mode t)
 
 
-(cl-pushnew 'nxml-mode codepilot-cc-major-modes)
-
 ;; ;; ====================
 ;; ;; undo and redo
 ;; ;; ====================
@@ -295,6 +293,13 @@
     (let ((coding-system-for-read 'utf-8))
       ad-do-it))
   (ad-activate 'rg-run)
-  ;; fix consult-ripgrep
-  (add-to-list 'process-coding-system-alist
-             '("rg" . (utf-8 . undecided-unix))))
+  ;; fix consult-ripgrep, global/gtags
+  (dolist (pg '("rg" "global"))
+    (cl-pushnew (cons pg  (cons 'utf-8 'undecided-unix))
+              process-coding-system-alist
+              :key (lambda (x) (car x))
+              :test #'string=)))
+
+
+(cl-pushnew 'nxml-mode codepilot-cc-major-modes)
+(cl-pushnew 'go-mode codepilot-cc-major-modes)

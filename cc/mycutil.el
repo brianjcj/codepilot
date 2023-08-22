@@ -510,7 +510,7 @@
            ;;   )
            )))))
 
-    (save-selected-window
+    (when t ;; save-selected-window
       (cp-pb-pop-to-buffer buf)
       (goto-char to-pos)
       ;; (recenter -1)

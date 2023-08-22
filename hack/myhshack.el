@@ -130,7 +130,7 @@ and then further adjusted to be at the end of the line."
                                           (hs-toggle-hiding)))
 
 
-(defun hs-toggle-hiding ()
+(defun hs-toggle-hiding (&optional E)
   "Toggle hiding/showing of a block.
 See `hs-hide-block' and `hs-show-block'."
   (interactive)

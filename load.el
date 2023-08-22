@@ -95,7 +95,7 @@
                            ))
 
 
-(add-hook 'gtags-mode-hook (lambda () (local-set-key "\er" 'gtags-find-rtag)))
+;; (add-hook 'gtags-mode-hook (lambda () (local-set-key "\er" 'gtags-find-rtag)))
 
 
 
@@ -183,7 +183,9 @@
 (define-key codepilot-ro-mode-map "j" 'gtags-find-tag)
 (define-key codepilot-ro-mode-map "l" 'gtags-find-file)
 (define-key codepilot-ro-mode-map "p" 'gtags-find-with-grep)
-(define-key codepilot-ro-mode-map "h" 'mygtags-switch-to-gtags-buf)
+(define-key codepilot-ro-mode-map "hg" 'mygtags-switch-to-gtags-buf)
+(define-key codepilot-ro-mode-map "hh" 'codepilot-nav-history)
+(define-key codepilot-ro-mode-map "hm" 'codepilot-push-marker)
 (define-key codepilot-ro-mode-map "`" 'cplist-minimize/restore-sidebar)
 (define-key codepilot-ro-mode-map "w" 'jump-to-h-c-file)
 (define-key codepilot-ro-mode-map "\M-j" 'semantic-complete-jump)

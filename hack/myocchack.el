@@ -25,7 +25,7 @@
 (global-set-key [(f3)] 'current-word-occur)
 (global-set-key [(shift f3)] 'current-word-occur-1)
 
-(defun occur (regexp &optional nlines)
+(defun occur (regexp &optional nlines region)
   (interactive (occur-read-primary-args))
   (codepilot-highlight (point-min) (point-max) regexp t t)
   (let ((occur-line-started-search (line-number-at-pos)))

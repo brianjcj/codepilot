@@ -1,7 +1,7 @@
 
 ;; tabbar
 (require 'tabbar)
-(tabbar-mode)
+;; (tabbar-mode)
 
 
 (defun tabbar-buffer-kill-buffer-hook ()

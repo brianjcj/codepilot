@@ -1740,7 +1740,7 @@ using the mouse."
 			  (string-match "\\([^\n]+\n\\)\\(\\(.\\|\n\\)*\\)"
 					cscope-process-output))
 		(setq file				nil
-		      glimpse-stripped-directory	nil
+		      ;; glimpse-stripped-directory	nil
 		      )
 		;; Get a line
 		(setq line (substring cscope-process-output

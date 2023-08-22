@@ -77,7 +77,8 @@
              (cl-case ret
                ((:window-layout-1&1
                  :window-layout-1)
-                (select-window code-win)
+                (when code-win
+                  (select-window code-win))
                 (split-window-vertically)
                 (other-window 1)
                 (setq win (selected-window))
@@ -104,8 +105,30 @@
 
 (defun cp-pb-go-view ()
   (interactive)
-  (save-selected-window
-    (cp-pb-go)))
+  (let (buf (current-buffer))
+    (save-selected-window
+      (cp-pb-go))
+    (select-window (get-buffer-window buf))))
+
+(defun cp-pb-go-view-next ()
+  (interactive)
+  (let ((pos (point)))
+    (forward-line)
+    (when (eq ?\[ (elt (thing-at-point 'line t) 0))
+      (forward-line))
+    (if (eobp)
+        (goto-char pos)
+      (cp-pb-go-view))))
+
+(defun cp-pb-go-view-previous ()
+  (interactive)
+  (let ((pos (point)))
+    (forward-line -1)
+    (when (eq ?\[ (elt (thing-at-point 'line t) 0))
+      (forward-line -1))
+    (if (eq (line-number-at-pos (point) t) 2)
+        (goto-char pos)
+      (cp-pb-go-view))))
 
 (defun cp-pb-go-mouse (e)
   (interactive "e")
@@ -125,6 +148,10 @@
     ([mouse-2] . cp-pb-fold/unfold-mouse)
     ("\r" . cp-pb-go)
     ("d" . cp-pb-go-view)
+    (" " . cp-pb-go-view)
+    ("\t" . cp-pb-go-view)
+    ("p" . cp-pb-go-view-previous)
+    ("n" . cp-pb-go-view-next)
     ("0" . delete-window)
     ("k" . delete-window)
     ("q" . delete-window)

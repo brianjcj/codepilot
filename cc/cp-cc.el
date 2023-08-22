@@ -500,12 +500,12 @@ showed in the codepilot sidebar."
           )))
     (cond (codepilot-ro-enabled-globally
            (dolist (mode codepilot-cc-major-modes)
-             (add-hook (intern-soft (concat (prin1-to-string mode) "-hook"))
-                       (lambda()(interactive)(codepilot-ro-mode 1)))))
+             (when-let (hook (intern-soft (concat (prin1-to-string mode) "-hook")))
+               (add-hook hook (lambda()(interactive)(codepilot-ro-mode 1))))))
           (t
            (dolist (mode codepilot-cc-major-modes)
-             (remove-hook (intern-soft (concat (prin1-to-string mode) "-hook"))
-                          (lambda()(interactive)(codepilot-ro-mode 1))))))))
+             (when-let (hook (intern-soft (concat (prin1-to-string mode) "-hook")))
+               (remove-hook hook (lambda()(interactive)(codepilot-ro-mode 1)))))))))
 
 (defalias 'cpro 'codepilot-ro-toggle-globally)
 

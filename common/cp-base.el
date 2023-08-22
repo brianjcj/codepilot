@@ -408,5 +408,12 @@ overlay on the hide-region-overlays \"ring\""
 (require 'desktop)
 (cl-pushnew 'cplist-side-window-size desktop-globals-to-save)
 
+
+(defun cptree-set-buffer-local-serial-number ()
+  (make-local-variable 'cptree-serial-number)
+  (setq cptree-serial-number cptree-serial-no-last)
+  (setq cptree-serial-no-last (1+ cptree-serial-no-last)))
+
+
 (provide 'cp-base)
 

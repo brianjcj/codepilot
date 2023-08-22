@@ -190,9 +190,7 @@
                   (run-hooks 'mygtags-output-done-hook)
                   (mygtags-next-file))
                  ;; serial number for sort by the create time.
-                 (make-local-variable 'cptree-serial-number)
-                 (setq cptree-serial-number cptree-serial-no-last)
-                 (setq cptree-serial-no-last (1+ cptree-serial-no-last))))
+                 (cptree-set-buffer-local-serial-number)))
                (when (= lines 1)
                  (message "Searching %s ... Done" tagname)
                  ;; (gtags-select-it t)
@@ -323,28 +321,6 @@
       (codepilot-search-and-hl-text sym nil 'id)
       (gtags-mode 1))))
 
-;; (defun gtags-visit-rootdir ()
-;;   "Tell tags commands the root directory of source tree."
-;;   (interactive)
-;;   (let (buffer input n)
-;;     (if (equal gtags-rootdir nil)
-;;       (save-excursion
-;;         (setq buffer (generate-new-buffer (generate-new-buffer-name "*rootdir*")))
-;;         (set-buffer buffer)
-;;         (setq n (call-process "global" nil t nil "-pr"))
-;;         (if (= n 0)
-;;           (setq gtags-rootdir (file-name-as-directory (buffer-substring (point-min)(1- (point-max)))))
-;;          (setq gtags-rootdir (directory-file-name default-directory))) ;; brian
-;;         (kill-buffer buffer)))
-;;     (setq input (read-directory-name "Visit root directory: "
-;; 			default-directory default-directory t))
-;;     (if (equal "" input) nil
-;;       (if (not (file-directory-p input))
-;;         (message "%s is not directory." input)
-;;        (setq gtags-rootdir (directory-file-name (expand-file-name input)))  ;; remove the ending / if any.
-;;        (setenv "GTAGSROOT" gtags-rootdir)))))
-
-
 (defface mygtags-linenum-face
     '((default (:inherit region))
       (((class color) (background light)) (:background "darkseagreen2"))
@@ -432,10 +408,9 @@
     (erase-buffer)
     (save-excursion
       (dolist (ff (cdr ll))
-        (insert (propertize (car ff) 'face 'font-lock-warning-face) "\n")
+        (insert (car ff) "\n")
         (dolist (entry (second ff))
-          (insert (propertize (format " %5d|" (string-to-number (car entry)))
-                              'face 'mygtags-linenum-face))
+          (insert (format " %5d|" (string-to-number (car entry))))
           (insert (second entry) "\n")))
       (insert "\n"))))
 
@@ -462,29 +437,13 @@ Turning on Gtags-Select mode calls the value of the variable
   (setq gtags-current-buffer (current-buffer))
   (goto-char (point-min))
   (modify-syntax-entry ?/ ".")
+  (setq-local font-lock-defaults
+            '(gtags-select-mode-font-lock-keywords nil t))
   (message "[GTAGS SELECT MODE] %d lines" (count-lines (point-min) (point-max)))
   (run-hooks 'gtags-select-mode-hook))
 
-
 (defun gtags-current-token ()
-  (ignore-errors
-    (save-excursion
-      (cond
-       ((looking-at "[0-9A-Za-z_]")
-        (while (looking-at "[0-9A-Za-z_]")
-          (forward-char -1))
-        (forward-char 1))
-       (t
-        (while (looking-at "[ \t\n([<]")
-          (forward-char -1))
-        (while (looking-at "[0-9A-Za-z_]")
-          (forward-char -1))
-        (forward-char 1)))
-      (if (and (bolp) (looking-at gtags-definition-regexp))
-          (goto-char (match-end 0)))
-      (if (looking-at gtags-symbol-regexp)
-          (gtags-match-string 0) nil))))
-
+  (thing-at-point 'symbol t))
 
 
 (defun mygtags-insert-gtag ()
@@ -634,7 +593,8 @@ Turning on Gtags-Select mode calls the value of the variable
 (defun mygtags-switch-to-gtags-buf ()
   (interactive)
   (let (input cands)
-    (setq cands (cplist-buffer-list-sort 'gtags-select-mode 'cptree-serial-number))
+    (setq cands (mapcar (lambda (x) (buffer-name x))
+                        (cplist-buffer-list-sort 'gtags-select-mode 'cptree-serial-number)))
     ;; (setq input (completing-read "Gtags Buffer: " cands nil t))  ; hard to turn off sort
     (setq input (consult--read cands :prompt "Gtags Buffer: " :sort nil))
     (codepilot-pop-or-switch-buffer input)))
@@ -735,5 +695,55 @@ Turning on Gtags-Select mode calls the value of the variable
 ;; (cl-pushnew 'find-tag-history desktop-globals-to-save)
 
 
+(defun codepilot-gtags-save-list-to-file (file)
+  (interactive "F")
+  (let ((bufs (cplist-buffer-list-sort 'gtags-select-mode 'cptree-serial-number))
+        jl)
+    (dolist (buf bufs)
+      (let ((jo (json-new-object)))
+        (setq jo (json-add-to-object jo "name" (buffer-name buf)))
+        (with-current-buffer buf
+          (setq jo (json-add-to-object jo "dir" default-directory))
+          (setq jo (json-add-to-object
+                    jo "content"
+                    (save-restriction
+                      (widen)
+                      (buffer-substring-no-properties (point-min) (point-max))))))
+        (push jo jl)))
+    (with-temp-file file
+      (erase-buffer)
+      (insert (json-encode jl)))))
+
+
+(defun codepilot-gtags-restore-list (file)
+  (interactive "f")
+  (with-temp-buffer
+    (insert-file-contents file)
+    (goto-char (point-min))
+    (let ((jl (json-read)))
+      (seq-doseq (item jl)
+        (let (name content dir buf)
+          (dolist (info item)
+            (set (car info) (cdr info)))
+          (setq buf (get-buffer-create name))
+          (with-current-buffer buf
+            (insert content)
+            (gtags-select-mode)
+            (setq-local default-directory dir)
+            (cptree-set-buffer-local-serial-number)
+            (goto-char (point-min))
+            (mygtags-next-file))))))
+  (cplist-update))
+
+
+(defvar gtags-select-mode-font-lock-keywords
+  '(
+    ("\\(^ +[0-9]+\\)" . 'mygtags-linenum-face)
+    ("\\(^ #\\+[^\n]+\\)$" . 'font-lock-keyword-face)
+    ("\\(^[^\s\n].+\\)$" . 'font-lock-warning-face))
+  "Default expressions to highlight in gtags select mode mode.")
+
 
 (provide 'mygtags)
+
+

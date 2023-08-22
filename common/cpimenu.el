@@ -454,6 +454,8 @@
                      (display-buffer buf)
                      (shrink-window-if-larger-than-buffer (get-buffer-window cpimenu-buf-name))))))))))
 
+(defvar cpimenu-show-with-cplist t)
+
 (defun cpimenu-toggle-cpimenu-win ()
   (interactive)
   (let (buf win)
@@ -473,8 +475,6 @@
   (setq cpimenu-win-height (window-height))
   (delete-window))
 
-
-(defvar cpimenu-show-with-cplist t)
 
 (defun cpimenu-when-cplist-win-del ()
   (let (win)

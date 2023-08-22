@@ -248,7 +248,7 @@
       (define-key gtags-mode-map "\eg" 'gtags-find-with-grep)
       (define-key gtags-mode-map "\eI" 'gtags-find-with-idutils)
       (define-key gtags-mode-map "\es" 'gtags-find-symbol)
-      (define-key gtags-mode-map "\er" 'gtags-find-rtag)
+      ;; (define-key gtags-mode-map "\er" 'gtags-find-rtag)
       (define-key gtags-mode-map "\et" 'gtags-find-tag)
       (define-key gtags-mode-map "\ev" 'gtags-visit-rootdir)
       ; common

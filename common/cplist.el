@@ -307,7 +307,7 @@
     (dolist (b (buffer-list))
       (setq mm (with-current-buffer b major-mode))
       (when (eq mm mode)
-        (push (buffer-name b) bl)))
+        (push b bl)))
     (reverse bl)))
 
 
@@ -318,7 +318,7 @@
       (with-current-buffer b
         (when (eq major-mode mode)
           (push (cons (symbol-value buffer-local-var-symbol) b) bl))))
-    (mapcar (lambda (x) (buffer-name (cdr x)))
+    (mapcar (lambda (x) (cdr x))
             (sort bl (lambda (a b) (> (car a) (car b)))))))
 
 

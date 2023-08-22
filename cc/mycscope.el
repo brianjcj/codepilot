@@ -469,9 +469,7 @@ SENTINEL-FUNC are optional process filter and sentinel, respectively."
              (rename-buffer buf-name)
 
              ;; serial number for sort by the create time.
-             (make-local-variable 'cptree-serial-number)
-             (setq cptree-serial-number cptree-serial-no-last)
-             (setq cptree-serial-no-last (1+ cptree-serial-no-last))
+             (cptree-set-buffer-local-serial-number)
 
              (toggle-truncate-lines 1)
 
